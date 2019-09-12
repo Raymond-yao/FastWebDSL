@@ -1,0 +1,55 @@
+[
+    VARIABLE('customNav'), EQUAL('='), RESERVED('Nav'), BRACKET('('), NEWLINE('new line'), 
+        VARIABLE('size'), EQUAL('='), STRING('small'), COMMA(','), NEWLINE('new line'), 
+        VARIABLE('background'), EQUAL('='), STRING('blue'), NEWLINE('new line'), 
+    BRACKET(')'), NEWLINE('new line'),
+
+    NEWLINE('new line'), 
+
+    VARIABLE('newHeader'), EQUAL('='), RESERVED('Header'), BRACKET('('), VARIABLE('background'), EQUAL('='), STRING('blue'), COMMA(','), VARIABLE('size'), EQUAL('='), STRING('small'), BRACKET(')'), NEWLINE('new line'), 
+   
+    NEWLINE('new line'), 
+   
+    VARIABLE('newImage'), EQUAL('='), RESERVED('Image'), BRACKET('('), NEWLINE('new line'), 
+        VARIABLE('value'), EQUAL('='), STRING('xxx.jpg'), NEWLINE('new line'), 
+    BRACKET(')'), NEWLINE('new line'),
+
+    NEWLINE('new line'), 
+
+    VARIABLE('newLink'), EQUAL('='), RESERVED('Link'), BRACKET('('), NEWLINE('new line'), 
+        VARIABLE('url'), EQUAL('='), STRING('xxxxx.html'), NEWLINE('new line'), 
+    BRACKET(')'), NEWLINE('new line'), 
+
+    NEWLINE('new line'), 
+
+    VARIABLE('newText'), EQUAL('='), STRING('this is some text'), NEWLINE('new line'), 
+    
+    NEWLINE('new line'), 
+    
+    VARIABLE('newContent'), EQUAL('='), RESERVED('Content'), NEWLINE('new line'), 
+    
+    NEWLINE('new line'), 
+    
+    VARIABLE('newContent'), BRACKET('{'), NEWLINE('new line'), 
+        VARIABLE('newImage'), NEWLINE('new line'), 
+        VARIABLE('newText'), NEWLINE('new line'), 
+        VARIABLE('newLink'), NEWLINE('new line'), 
+    BRACKET('}'), NEWLINE('new line'), 
+    
+    NEWLINE('new line'), 
+    
+    VARIABLE('customNav'), BRACKET('{'), NEWLINE('new line'), 
+        RESERVED('Link'), BRACKET('('), STRING('vvvvvv'), BRACKET(')'), NEWLINE('new line'), 
+        RESERVED('Link'), BRACKET('('), STRING('bbbbb'), BRACKET(')'), NEWLINE('new line'), 
+        RESERVED('Link'), BRACKET('('), STRING('aaaaa'), BRACKET(')'), NEWLINE('new line'), 
+        RESERVED('Link'), BRACKET('('), STRING('xxxx'), BRACKET(')'), NEWLINE('new line'),
+    BRACKET('}'), NEWLINE('new line'), 
+    
+    NEWLINE('new line'), 
+    
+    RESERVED('Page'), BRACKET('{'), NEWLINE('new line'), 
+        VARIABLE('newHeader'), NEWLINE('new line'), 
+        RESERVED('Nav'), RESERVED('Content'), VARIABLE('customNav'), NEWLINE('new line'), 
+        RESERVED('Footer'), NEWLINE('new line'), 
+    BRACKET('}'), NEWLINE('new line')
+]

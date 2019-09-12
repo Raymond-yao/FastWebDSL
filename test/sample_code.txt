@@ -1,0 +1,37 @@
+customNav = Nav(
+  size = "small",
+  background="blue" 
+)
+
+newHeader = Header (background="blue",size="small")
+
+newImage = Image(
+  value=  "xxx.jpg"
+)
+
+newLink = Link(
+  url="xxxxx.html"
+)
+
+newText = "this is some text"
+
+newContent = Content
+
+newContent {
+  newImage
+  newText
+  newLink
+}
+
+customNav {
+  Link("vvvvvv")
+  Link("bbbbb")
+  Link("aaaaa")
+  Link("xxxx")
+}
+
+Page {
+  newHeader
+  Nav Content customNav 
+  Footer
+}
