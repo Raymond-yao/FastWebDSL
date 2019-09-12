@@ -16,9 +16,9 @@ class Tokenizer:
     """
         1) Tokenizer works as a state machine: we can almost immediately know the next state given the read character.
         2) The initial state starts from GENERAL.
-        3) Cases for strings and numbers require caching the previous characters will be stored in char_buffer,
-            the buffer gets cleared by the handler when handlers detect the sequence is complete
-        4) The final built token result will be in list_of_tokens
+        3) Cases for strings and numbers that require caching the previous characters will be stored in char_buffer,
+           the buffer gets cleared by the handlers when they detect the build sequence is complete
+        4) The final result will be in list_of_tokens
     """
 
     spacing_characters = {" ", "\t", "\r"}
