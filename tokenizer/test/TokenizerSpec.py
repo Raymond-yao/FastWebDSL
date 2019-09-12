@@ -1,6 +1,6 @@
 import unittest
-from ..tokenizer.Tokenizer import Tokenizer
-from ..tokenizer.Token import *
+from ..Tokenizer import Tokenizer
+from ..Token import *
 
 class TokenizerSpec(unittest.TestCase):
 
