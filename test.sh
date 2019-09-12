@@ -1,5 +1,8 @@
 #!/bin/bash
+set -e
 
-# Tokenizer Test
+echo "-------- Executing Tests Before Commit --------"
+echo ""
+echo "-------- Tokenizer Tests --------"
 python3 -m tokenizer.test.TokenizerSpec
 
