@@ -145,21 +145,13 @@ class TokenizerSpec(unittest.TestCase):
         tk = Tokenizer()
         programs = [""" "abc123""", """ "abc\n" """]
         for invalid_p in programs:
-            try:
-                tk.read(invalid_p)
-                self.fail("should throw InvalidTokenError")
-            except InvalidTokenError as err:
-                pass
+            self.assertRaises(InvalidTokenError, tk.read, invalid_p)
 
     def test_number_error(self):
         tk = Tokenizer()
         programs = [""" 1234"abc """, """ 12"3 """, """ 1234"abc" """, "1234a"]
         for invalid_p in programs:
-            try:
-                tk.read(invalid_p)
-                self.fail("should throw InvalidTokenError")
-            except InvalidTokenError as err:
-                pass
+           self.assertRaises(InvalidTokenError, tk.read, invalid_p)
 
 
 if __name__ == '__main__':
