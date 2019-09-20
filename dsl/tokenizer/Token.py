@@ -41,6 +41,9 @@ class Token:
     def __repr__(self):
         return f"{self.type.name}('{self.value}')"
 
+    def is_a(self, tpe):
+        return self.type == tpe
+
 
 class InvalidTokenError(Exception):
     def __init__(self, message):
