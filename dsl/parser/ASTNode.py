@@ -81,7 +81,7 @@ class AssignmentNode(ASTNode):
         self.assignment_type = None
 
     def parse(self):
-        self.var_name = self.next()
+        self.var_name = self.next().value
         self.next()  # get rid of the '=' sign
         
         if not self.has_next():
