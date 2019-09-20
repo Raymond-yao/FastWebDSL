@@ -10,7 +10,7 @@ class ASTNodeSpec(unittest.TestCase):
             self.assertRaises(ParseError, ProgramNode(invalid_p).parse)
 
     def test_ProgramNode_normal(self):
-        tk_list = [NewLine(), NewLine(), NewLine(), Var("abc"), Eq(), Str("123")]
+        tk_list = [Var("abc"), Eq(), Str("123")]
         pgNode = ProgramNode(tk_list)
         pgNode.parse()
         self.assertEqual(len(pgNode.assignments), 1)

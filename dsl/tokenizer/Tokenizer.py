@@ -21,8 +21,8 @@ class Tokenizer:
         4) The final result will be in list_of_tokens
     """
 
-    spacing_characters = {" ", "\t", "\r"}
-    brackets = {"(", ")", "{", "}"}
+    spacing_characters = {" ", "\t", "\r", "\n"}
+    brackets = {"(", ")", "{", "}", "[", "]"}
 
     def __init__(self):
         self.current_state = State.GENERAL
@@ -99,8 +99,6 @@ class Tokenizer:
             return
         elif char in self.brackets:
             self.add_token(Bracket(char))
-        elif char == "\n":
-            self.add_token(NewLine())
         elif char == "=":
             self.add_token(Eq())
         elif char == ",":
