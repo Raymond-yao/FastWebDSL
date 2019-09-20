@@ -13,13 +13,12 @@ from enum import Enum
 class Type(Enum):
     STRING = 1
     NUMBER = 2
-    NEWLINE = 3
-    END = 4
-    RESERVED = 5
-    VARIABLE = 6
-    BRACKET = 7
-    EQUAL = 8
-    COMMA = 9
+    END = 3
+    RESERVED = 4
+    VARIABLE = 5
+    BRACKET = 6
+    EQUAL = 7
+    COMMA = 8
 
 
 RESERVED_NAME = {"Nav", "Header", "Content", "Link",
@@ -61,11 +60,6 @@ def Str(val):
 
 def Num(val):
     return Token(Type.NUMBER, val)
-
-
-def NewLine():
-    return Token(Type.NEWLINE, "new line")
-
 
 def Reserved(val):
     return Token(Type.RESERVED, val)

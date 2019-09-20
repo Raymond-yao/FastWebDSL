@@ -10,17 +10,6 @@ class TokenizerSpec(unittest.TestCase):
         program = "                  "
         self.assertEqual(tk.read(program), [])
 
-    def test_new_line(self):
-        tk = Tokenizer()
-        program = "\n\n\n\n\n\n\n\n\n"
-        self.assertEqual(tk.read(program), [NewLine(), NewLine(), NewLine(
-        ), NewLine(), NewLine(), NewLine(), NewLine(), NewLine(), NewLine()])
-        program = """
-
-
-        """
-        self.assertEqual(tk.read(program), [NewLine(), NewLine(), NewLine()])
-
     def test_string(self):
         tk = Tokenizer()
         program = """ "qwertyuiop[]" """
@@ -33,7 +22,7 @@ class TokenizerSpec(unittest.TestCase):
 
     def test_brackets(self):
         tk = Tokenizer()
-        program = "{(}){)}(()()(){}}"
+        program = "{(}){)}(([])(])([])][{}}"
 
         expected_res = []
         for br in program:
@@ -79,10 +68,10 @@ class TokenizerSpec(unittest.TestCase):
                       )"""
         self.assertEqual(tk.read(program), [
             Var("cool_nav_bar"), Eq(), Reserved(
-                "Nav"), Bracket("("), NewLine(),
-            Var("size"), Eq(), Str("small"), Comma(), NewLine(),
-            Var("colour"), Eq(), Str("blue"), Comma(), NewLine(),
-            Var("capacity"), Eq(), Num(9999999), NewLine(),
+                "Nav"), Bracket("("), 
+            Var("size"), Eq(), Str("small"), Comma(), 
+            Var("colour"), Eq(), Str("blue"), Comma(), 
+            Var("capacity"), Eq(), Num(9999999), 
             Bracket(")")
         ])
 
@@ -109,11 +98,11 @@ class TokenizerSpec(unittest.TestCase):
                         Footer
                       }"""
         self.assertEqual(tk.read(program), [
-            Reserved("Page"), Bracket("{"), NewLine(),
-            Reserved("Header"), NewLine(),
-            Reserved("Nav"), Reserved("Content"), Var("custom_Nav"), NewLine(),
-            Var("FancyFooter_self_made"), NewLine(),
-            Reserved("Footer"), NewLine(),
+            Reserved("Page"), Bracket("{"), 
+            Reserved("Header"), 
+            Reserved("Nav"), Reserved("Content"), Var("custom_Nav"), 
+            Var("FancyFooter_self_made"), 
+            Reserved("Footer"), 
             Bracket("}")
         ])
 
@@ -124,12 +113,12 @@ class TokenizerSpec(unittest.TestCase):
             "raymondchen" 25555 6777 7888 8999 "abcdefg" "abcdefge"
             "fffghjk"
         """
-        self.assertEqual(tk.read(program), [NewLine(),
+        self.assertEqual(tk.read(program), [
                                             Num(234), Str("abc"), Str("def"), Num(2444), Str(
-                                                "aaa"), Str("123"), Num(321), Str("244"), NewLine(),
+                                                "aaa"), Str("123"), Num(321), Str("244"), 
                                             Str("raymondchen"), Num(25555), Num(6777), Num(7888), Num(
-            8999), Str("abcdefg"), Str("abcdefge"), NewLine(),
-            Str("fffghjk"), NewLine()
+            8999), Str("abcdefg"), Str("abcdefge"), 
+            Str("fffghjk")
         ])
 
     def test_number_with_brackets_followed(self):
