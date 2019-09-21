@@ -1,6 +1,6 @@
 from ..tokenizer.Token import *
 """
-EBNF:
+EBNF
     PROGRAM     ::= (ASSIGNMENT)* (LAYOUT)+
     ASSIGNMENT  ::= VAR “=” VALUE
     VAR         ::= CHAR(CHAR | NUMBER | ” _”)*
@@ -9,8 +9,8 @@ EBNF:
     VALUE       ::= STRING | NUMBER | CONSTRUCTOR | VAR
     CONSTRUCTOR ::= FUNCNAME | FUNCNAME “(” ASSIGNMENT (, ASSIGNMENT)*  “)”
     FUNCNAME    ::= “Nav” | “Header” | “Content” | “Link” | “Image” | “Video” | “Footer” | “Button”
-    LAYOUT      ::= (VAR | “Page”) “{“ ROW(“\n” ROW)* “}”
-    ROW         ::= (VAR | CONSTRUCTOR)  (“\s” (VAR | CONSTRUCTOR))*
+    LAYOUT ::= (VAR | “Page”) “{“ ROW(ROW)* “}”
+    ROW ::= "[" (VAR | CONSTRUCTOR) (“\s” (VAR | CONSTRUCTOR))* "]"
 """
 
 
@@ -45,10 +45,7 @@ class ProgramNode(ASTNode):
     def parse(self):
         while self.has_next():
             tk = self.peek()
-            if tk.is_a(Type.NEWLINE):
-                self.next()
-                continue
-            elif tk.is_a(Type.RESERVED) or tk.is_a(Type.VARIABLE):
+            if tk.is_a(Type.RESERVED) or tk.is_a(Type.VARIABLE):
                 tk = self.tokens[1]
                 if tk.is_a(Type.EQUAL):
                     new_assign_node = AssignmentNode(self.tokens)
@@ -90,10 +87,6 @@ class AssignmentNode(ASTNode):
         if not self.has_next():
             raise ParseError("reach the end of input unexpectedly")
 
-        
-        while self.peek().is_a(NewLine):
-            self.next()
-        
         tk = self.peek()
         if tk.is_a(Type.RESERVED):
             self.assignment_type = self.FUNC
