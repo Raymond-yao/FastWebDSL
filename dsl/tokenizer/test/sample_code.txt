@@ -31,7 +31,7 @@ customNav {
 }
 
 Page {
-  newHeader
-  Nav Content customNav 
-  Footer
+  [newHeader]
+  [Nav Content customNav] 
+  [Footer]
 }
