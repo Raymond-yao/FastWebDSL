@@ -1,6 +1,6 @@
 from ..tokenizer.Token import *
 """
-EBNF:
+EBNF
     PROGRAM     ::= (ASSIGNMENT)* (LAYOUT)+
     ASSIGNMENT  ::= VAR “=” VALUE
     VAR         ::= CHAR(CHAR | NUMBER | ” _”)*
@@ -9,8 +9,8 @@ EBNF:
     VALUE       ::= STRING | NUMBER | CONSTRUCTOR | VAR
     CONSTRUCTOR ::= FUNCNAME | FUNCNAME “(” ASSIGNMENT (, ASSIGNMENT)*  “)”
     FUNCNAME    ::= “Nav” | “Header” | “Content” | “Link” | “Image” | “Video” | “Footer” | “Button”
-    LAYOUT      ::= (VAR | “Page”) “{“ ROW(“\n” ROW)* “}”
-    ROW         ::= (VAR | CONSTRUCTOR)  (“\s” (VAR | CONSTRUCTOR))*
+    LAYOUT ::= (VAR | “Page”) “{“ ROW(ROW)* “}”
+    ROW ::= "[" (VAR | CONSTRUCTOR) (“\s” (VAR | CONSTRUCTOR))* "]"
 """
 
 
