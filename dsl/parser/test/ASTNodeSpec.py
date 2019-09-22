@@ -2,6 +2,7 @@ import unittest
 from ..ASTNode import *
 from ...tokenizer.Token import *
 from ...tokenizer.Tokenizer import Tokenizer
+from .TestUtil import *
 
 class ASTNodeSpec(unittest.TestCase):
 
