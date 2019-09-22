@@ -1,10 +1,11 @@
+import os
 import unittest
 from ..ASTNode import *
 from ...tokenizer.Token import *
 from ...tokenizer.Tokenizer import Tokenizer
 
 # Will log more detail
-DEBUGGING = False
+DEBUGGING = True if "DEBUG" in os.environ else False
 
 
 class TestUtil(unittest.TestCase):
@@ -30,6 +31,8 @@ class TestUtil(unittest.TestCase):
 
     def expectFail(self, program):
         try:
+            if DEBUGGING:
+                print("Testing %s" % program)
             pgNode = ProgramNode(self.tokenize(program))
             pgNode.parse()
             self.fail(
@@ -51,15 +54,18 @@ class TestUtil(unittest.TestCase):
                           (parsedNode, expect))
                     print("Expected value: %s, actual value: %s" %
                           (expectValue, actualValue))
-                self.assertEqual(type(expectValue),
-                                 type(actualValue))
+                if type(expectValue) != dict:
+                    self.assertEqual(type(expectValue),
+                                    type(actualValue))
                 if type(expectValue) is list:
                     self.assertEqual(type(actualValue), list)
                     self.assertEqual(len(expectValue), len(actualValue))
                     for i in range(len(expectValue)):
                         self.__validateNodes(actualValue[i], expectValue[i])
-                else:
+                elif type(expectValue) in [int, bool, str]:
                     self.assertEqual(expectValue, actualValue)
+                else:
+                    self.__validateNodes(actualValue, expectValue)
 
     def tokenize(self, str):
         return Tokenizer().read(str)

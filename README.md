@@ -71,3 +71,9 @@ EBNF
     LAYOUT      ::= (VAR | “Page”) “{“ ROW(ROW)* “}”
     ROW         ::= "[" (VAR | CONSTRUCTOR) (“\s” (VAR | CONSTRUCTOR))* "]"
 ```
+
+## Dev Notes
+
+Please run `./setup.sh`, which will setup githook and python test coverage tool
+
+For manual test, include env variable `DEBUG="not empty"` to enable test debug level log. E.g. `DEBUG="not empty" ./test.sh`

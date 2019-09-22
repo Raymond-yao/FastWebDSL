@@ -1,5 +1,0 @@
-#!/bin/bash
-
-# Auto run test.sh before commit
-./test.sh
-
