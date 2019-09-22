@@ -61,13 +61,13 @@ This is the ENNF we defined so far.
 ```
 EBNF
     PROGRAM     ::= (ASSIGNMENT)* (LAYOUT)+
-    ASSIGNMENT  ::= VAR “=” VALUE
+    ASSIGNMENT  ::= VAR “=” (VALUE | CONSTRUCTOR)
     VAR         ::= CHAR(CHAR | NUMBER | ” _”)*
     STRING      ::= \” CHAR(CHAR)* \”
     CHAR        ::= “a”-”z” | “A”-”Z”
-    VALUE       ::= STRING | NUMBER | CONSTRUCTOR | VAR
+    VALUE       ::= STRING | NUMBER | VAR
     CONSTRUCTOR ::= FUNCNAME | FUNCNAME “(” ASSIGNMENT (, ASSIGNMENT)*  “)”
     FUNCNAME    ::= “Nav” | “Header” | “Content” | “Link” | “Image” | “Video” | “Footer” | “Button”
-    LAYOUT ::= (VAR | “Page”) “{“ ROW(ROW)* “}”
-    ROW ::= "[" (VAR | CONSTRUCTOR) (“\s” (VAR | CONSTRUCTOR))* "]"
+    LAYOUT      ::= (VAR | “Page”) “{“ ROW(ROW)* “}”
+    ROW         ::= "[" (VAR | CONSTRUCTOR) (“\s” (VAR | CONSTRUCTOR))* "]"
 ```
