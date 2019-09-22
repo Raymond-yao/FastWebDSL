@@ -159,7 +159,8 @@ class Tokenizer:
                 f"Expected a number, letter or underscore while invalid character [{char}] was read")
 
     def is_identifier_end(self, char):
-        return char in self.spacing_characters or char in self.brackets or char == '=' or char == '\n' or char == None
+        # TODO: more rubust design
+        return char in self.spacing_characters or char in self.brackets or char == '=' or char == None or char == ','
 
     def add_token(self, token):
         self.list_of_tokens.append(token)

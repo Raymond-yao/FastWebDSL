@@ -1,11 +1,6 @@
 #!/bin/bash
 set -e
 
-if [ "$(which coverage)" -e "" ]; then
-  echo "Please install pip coverage first"
-  pip3 install coverage
-fi
-
 echo "-------- Executing Tests Before Commit --------"
 echo ""
 echo "-------- Tokenizer Tests --------"
