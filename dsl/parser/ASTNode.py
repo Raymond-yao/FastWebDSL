@@ -88,7 +88,7 @@ class AssignmentNode(ASTNode):
         self.assigned = None
         self.assignment_type = None
 
-    def parse(self, allowConstructor=True):
+    def parse(self):
         if len(self.tokens) < 3:
             raise ParseError(
                 "reach the end of input unexpectedly, not a valid assignment statement")
@@ -104,8 +104,6 @@ class AssignmentNode(ASTNode):
 
         tk = self.peek()
         if tk.is_a(Type.RESERVED):
-            if not allowConstructor:
-                raise ParseError("constructor definition is not allowed here")
             self.assignment_type = self.FUNC
             self.assigned = ConstructorNode(self.tokens)
             self.assigned.parse()
@@ -156,7 +154,7 @@ class ConstructorNode(ASTNode):
 
     def __generateParam(self, tokenList):
         new_assign_node = AssignmentNode(tokenList)
-        new_assign_node.parse(False)
+        new_assign_node.parse()
         return new_assign_node
 
 
