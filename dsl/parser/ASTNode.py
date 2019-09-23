@@ -169,6 +169,9 @@ class ConstructorNode(ASTNode):
         new_assign_node.parse()
         return new_assign_node
 
+    def name_check(self):
+        return
+
 
 class LayoutNode(ASTNode):
 
@@ -176,7 +179,7 @@ class LayoutNode(ASTNode):
         return super().parse()  # TODO
 
     def name_check(self):
-        print("Hi Im layouts")
+        return
 
 
 class ParseError(Exception):
