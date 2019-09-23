@@ -1,4 +1,5 @@
 from ..tokenizer.Token import *
+
 """
 EBNF
     PROGRAM     ::= (ASSIGNMENT)* (LAYOUT)+
@@ -21,6 +22,7 @@ class ASTNode:
 
     def __init__(self, list_of_tokens):
         self.tokens = list_of_tokens
+        self.names = []
 
     def parse(self):
         self.next()
@@ -67,9 +69,14 @@ class ProgramNode(ASTNode):
                 raise ParseError(
                     f"unexpected Token {repr(tk)}: expected a variable or function keyword")
 
+    def name_check(self):
+        for a in self.assignments:
+            a.name_check()
+        for l in self.layouts:
+            l.name_check()
+
 
 class AssignmentNode(ASTNode):
-
     STRING = "STRING"
     FUNC = "FUNC"
     NUM = "NUM"
@@ -115,6 +122,11 @@ class AssignmentNode(ASTNode):
             raise ParseError(
                 f"unexpected Token {repr(tk)}: expected a string, number or constructor as an assigned value")
 
+    def name_check(self):
+        self.names.append(self.var_name)
+        if self.assignment_type == self.TYPE_CONVERT_MAP[Type.VARIABLE] and self.assigned not in self.names:
+            raise NameCheckError(self.assigned)
+
 
 class ConstructorNode(ASTNode):
     def __init__(self, list_of_tokens):
@@ -148,7 +160,7 @@ class ConstructorNode(ASTNode):
                 comma = constructorParam.index(Comma())
                 self.params.append(self.__generateParam(
                     constructorParam[:comma]))
-                constructorParam = constructorParam[comma+1:]
+                constructorParam = constructorParam[comma + 1:]
             self.params.append(self.__generateParam(constructorParam))
         [self.next() for i in range(move)]
 
@@ -163,7 +175,16 @@ class LayoutNode(ASTNode):
     def parse(self):
         return super().parse()  # TODO
 
+    def name_check(self):
+        print("Hi Im layouts")
+
 
 class ParseError(Exception):
     def __init__(self, message):
         self.message = message
+
+
+class NameCheckError(Exception):
+    def __init__(self, message):
+        message = "You didn't declare : " + message
+        super().__init__(message)

@@ -22,7 +22,7 @@ class ASTNodeSpec(unittest.TestCase):
         """
         pgNode = ProgramNode(self.tokenize(program))
         pgNode.parse()
-        self.assertEqual(self.strucutrize(pgNode), {
+        self.assertEqual(self.structurize(pgNode), {
             'type': 'ProgramNode',
             'assignments': [
                 {
@@ -47,7 +47,7 @@ class ASTNodeSpec(unittest.TestCase):
         pgNode = ProgramNode(self.tokenize(program))
         pgNode.parse()
         self.maxDiff = None
-        self.assertEqual(self.strucutrize(pgNode), {
+        self.assertEqual(self.structurize(pgNode), {
             'type': 'ProgramNode',
             'assignments': [
                 {
@@ -67,7 +67,7 @@ class ASTNodeSpec(unittest.TestCase):
             'layouts': []
         })
 
-    def strucutrize(self, node):
+    def structurize(self, node):
         """
             A recursive helper to dump an AST tree to a nested dictionary object
             one can also call json.dump to move it to a json.
@@ -76,9 +76,9 @@ class ASTNodeSpec(unittest.TestCase):
             assign_arr = []
             layout_arr = []
             for a in node.assignments:
-                assign_arr.append(self.strucutrize(a))
+                assign_arr.append(self.structurize(a))
             for l in node.layouts:
-                layout_arr.append(self.strucutrize(l))
+                layout_arr.append(self.structurize(l))
             return {
                 'type': 'ProgramNode',
                 'assignments': assign_arr,
@@ -89,7 +89,7 @@ class ASTNodeSpec(unittest.TestCase):
                 return {
                     'type': 'AssignmentNode',
                     'var_name': node.var_name,
-                    'assigned': strucutrize(node.assigned)
+                    'assigned': structurize(node.assigned)
                 }
             else:
                  return {
