@@ -2,7 +2,7 @@ module.exports = {
     entry: './Page.jsx',
     output: {
       path: __dirname + '/target',
-      publicPath: '/build',
+      publicPath: '/',
       filename: 'bundle.js'
     },
     module: {
