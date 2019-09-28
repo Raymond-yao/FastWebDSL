@@ -115,5 +115,36 @@ class LayoutNodeSpec(TestUtil):
         ]
         })
 
+    def test_layout_missing_page(self):
+        program = """
+            {
+                [Header()]
+            }
+        """
+        self.expectFail(program)
+
+    def test_layout_missing_lbrace(self):
+        program = """
+            Page
+                [Header()]
+            }
+        """
+        self.expectFail(program)
+
+    def test_layout_missing_rbrace(self):
+        program = """
+            Page {
+                [Header()]
+
+        """
+        self.expectFail(program)
+
+    def test_invalid_element(self):
+        program = """
+            Page {
+                [Header() 123]
+            }
+        """
+        self.expectFail(program)
 if __name__ == '__main__':
     unittest.main()

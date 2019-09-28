@@ -165,12 +165,26 @@ class LayoutNode(ASTNode):
         self.rows = []
 
     def parse(self):
-        while True:
-            if self.next().value == '[':
+        if self.next().value != 'Page':
+            raise ParseError(
+                "missing \"Page\" keyword")
+        if self.next().value != '{':
+            raise ParseError(
+                "missing \"{\"")
+        while self.has_next():
+            tk = self.next()
+            if tk.value == '[':
                 row = RowNode(self.tokens)
                 self.rows.append(row)
                 row.parse()
-            if self.peek().value == '}':
+            else:
+                raise ParseError(
+                    "unexpected row start: %s" % tk.value)
+            # layout should end with '}'
+            if not self.has_next():
+                raise ParseError(
+                    "missing \"}\"")
+            elif self.peek().value == '}':
                 self.next()
                 break
 
@@ -180,7 +194,7 @@ class RowNode(ASTNode):
         self.elements = []
 
     def parse(self):
-        while True:
+        while self.has_next():
             tk = self.peek()
             if tk.is_a(Type.RESERVED):
                 node = ConstructorNode(self.tokens)
@@ -190,8 +204,16 @@ class RowNode(ASTNode):
                 node = VarNode(self.tokens)
                 self.elements.append(node)
                 node.parse()
+            elif tk.is_a(Type.STRING):
+                self.elements.append(tk.value)
+            else:
+                raise ParseError(
+                    "unexpected row element")
             # check if reach the end of the Row
-            if self.peek().value == ']':
+            if not self.has_next():
+                raise ParseError(
+                    "missing \"]\"")
+            elif self.peek().value == ']':
                 self.next()
                 break
 
