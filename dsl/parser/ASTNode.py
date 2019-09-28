@@ -160,8 +160,48 @@ class ConstructorNode(ASTNode):
 
 class LayoutNode(ASTNode):
 
+    def __init__(self, list_of_tokens):
+        super().__init__(list_of_tokens)
+        self.rows = []
+
     def parse(self):
-        return super().parse()  # TODO
+        while True:
+            if self.next().value == '[':
+                row = RowNode(self.tokens)
+                self.rows.append(row)
+                row.parse()
+            if self.peek().value == '}':
+                self.next()
+                break
+
+class RowNode(ASTNode):
+    def __init__(self, list_of_tokens):
+        super().__init__(list_of_tokens)
+        self.elements = []
+
+    def parse(self):
+        while True:
+            tk = self.peek()
+            if tk.is_a(Type.RESERVED):
+                node = ConstructorNode(self.tokens)
+                self.elements.append(node)
+                node.parse()
+            elif tk.is_a(Type.VARIABLE):
+                node = VarNode(self.tokens)
+                self.elements.append(node)
+                node.parse()
+            # check if reach the end of the Row
+            if self.peek().value == ']':
+                self.next()
+                break
+
+class VarNode(ASTNode):
+    def __init__(self, list_of_tokens):
+        super().__init__(list_of_tokens)
+        self.varName = None
+
+    def parse(self):
+        self.varName = self.next().value
 
 
 class ParseError(Exception):
