@@ -1,8 +1,9 @@
 import unittest
-from ..ASTNode import *
-from ...tokenizer.Token import *
-from ...tokenizer.Tokenizer import Tokenizer
-from .TestUtil import *
+from dsl.Parser import *
+from dsl.Token import *
+from dsl.Tokenizer import Tokenizer
+from dsl.test.TestUtil import *
+
 
 class ASTNodeSpec(unittest.TestCase):
 
@@ -10,7 +11,8 @@ class ASTNodeSpec(unittest.TestCase):
         return Tokenizer().read(str)
 
     def test_ProgramNode_invalid(self):
-        invalids = [[Eq()], [Num(123)], [Str("123")], [Comma()], [Bracket("(")]]
+        invalids = [[Eq()], [Num(123)], [Str(
+            "123")], [Comma()], [Bracket("(")]]
         for invalid_p in invalids:
             self.assertRaises(ParseError, ProgramNode(invalid_p).parse)
 
@@ -36,13 +38,13 @@ class ASTNodeSpec(unittest.TestCase):
 
     def test_multiple_simple_assignments(self):
         program = """
-        
+
         some_num = 1
         some_str = "2"
-        
-        
+
+
         some_var = var1
-        
+
         """
         pgNode = ProgramNode(self.tokenize(program))
         pgNode.parse()
@@ -54,11 +56,11 @@ class ASTNodeSpec(unittest.TestCase):
                     'type': 'AssignmentNode',
                     'var_name': 'some_num',
                     'assigned': 1
-                },{
+                }, {
                     'type': 'AssignmentNode',
                     'var_name': 'some_str',
                     'assigned': "2"
-                },{
+                }, {
                     'type': 'AssignmentNode',
                     'var_name': 'some_var',
                     'assigned': "var1"
@@ -92,14 +94,14 @@ class ASTNodeSpec(unittest.TestCase):
                     'assigned': strucutrize(node.assigned)
                 }
             else:
-                 return {
+                return {
                     'type': 'AssignmentNode',
                     'var_name': node.var_name,
                     'assigned': node.assigned
                 }
-        else: 
+        else:
             return {}
-            
+
 
 if __name__ == '__main__':
     unittest.main()

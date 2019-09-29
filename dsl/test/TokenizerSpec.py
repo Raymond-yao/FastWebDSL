@@ -1,6 +1,6 @@
 import unittest
-from ..Tokenizer import Tokenizer
-from ..Token import *
+from dsl.Token import *
+from dsl.Tokenizer import Tokenizer
 
 
 class TokenizerSpec(unittest.TestCase):
@@ -68,10 +68,10 @@ class TokenizerSpec(unittest.TestCase):
                       )"""
         self.assertEqual(tk.read(program), [
             Var("cool_nav_bar"), Eq(), Reserved(
-                "Nav"), Bracket("("), 
-            Var("size"), Eq(), Str("small"), Comma(), 
-            Var("colour"), Eq(), Str("blue"), Comma(), 
-            Var("capacity"), Eq(), Num(9999999), 
+                "Nav"), Bracket("("),
+            Var("size"), Eq(), Str("small"), Comma(),
+            Var("colour"), Eq(), Str("blue"), Comma(),
+            Var("capacity"), Eq(), Num(9999999),
             Bracket(")")
         ])
 
@@ -98,11 +98,11 @@ class TokenizerSpec(unittest.TestCase):
                         Footer
                       }"""
         self.assertEqual(tk.read(program), [
-            Reserved("Page"), Bracket("{"), 
-            Reserved("Header"), 
-            Reserved("Nav"), Reserved("Content"), Var("custom_Nav"), 
-            Var("FancyFooter_self_made"), 
-            Reserved("Footer"), 
+            Reserved("Page"), Bracket("{"),
+            Reserved("Header"),
+            Reserved("Nav"), Reserved("Content"), Var("custom_Nav"),
+            Var("FancyFooter_self_made"),
+            Reserved("Footer"),
             Bracket("}")
         ])
 
@@ -114,10 +114,10 @@ class TokenizerSpec(unittest.TestCase):
             "fffghjk"
         """
         self.assertEqual(tk.read(program), [
-                                            Num(234), Str("abc"), Str("def"), Num(2444), Str(
-                                                "aaa"), Str("123"), Num(321), Str("244"), 
-                                            Str("raymondchen"), Num(25555), Num(6777), Num(7888), Num(
-            8999), Str("abcdefg"), Str("abcdefge"), 
+            Num(234), Str("abc"), Str("def"), Num(2444), Str(
+                "aaa"), Str("123"), Num(321), Str("244"),
+            Str("raymondchen"), Num(25555), Num(6777), Num(7888), Num(
+                8999), Str("abcdefg"), Str("abcdefge"),
             Str("fffghjk")
         ])
 
@@ -140,7 +140,7 @@ class TokenizerSpec(unittest.TestCase):
         tk = Tokenizer()
         programs = [""" 1234"abc """, """ 12"3 """, """ 1234"abc" """, "1234a"]
         for invalid_p in programs:
-           self.assertRaises(InvalidTokenError, tk.read, invalid_p)
+            self.assertRaises(InvalidTokenError, tk.read, invalid_p)
 
 
 if __name__ == '__main__':

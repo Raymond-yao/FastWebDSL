@@ -1,5 +1,5 @@
 import unittest
-from .TestUtil import *
+from dsl.test.TestUtil import *
 
 
 class ConstructorNodeSpec(TestUtil):

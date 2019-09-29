@@ -1,8 +1,8 @@
 import os
 import unittest
-from ..ASTNode import *
-from ...tokenizer.Token import *
-from ...tokenizer.Tokenizer import Tokenizer
+from dsl.Parser import *
+from dsl.Token import *
+from dsl.Tokenizer import Tokenizer
 
 # Will log more detail
 DEBUGGING = True if "DEBUG" in os.environ else False
@@ -37,7 +37,9 @@ class TestUtil(unittest.TestCase):
             pgNode.parse()
             self.fail(
                 "Failed --- unexpected parsing success for program %s" % program)
-        except ParseError:
+        except ParseError as e:
+            if DEBUGGING:
+                print("EXPECTED ERROR --- Testing %s, Getting Error Messageg %s" % (program, e.message))
             pass
 
     def __validateNodes(self, parsedNode, expect):

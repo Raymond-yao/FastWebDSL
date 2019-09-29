@@ -1,4 +1,5 @@
-from ..tokenizer.Token import *
+from .Token import *
+
 """
 EBNF
     PROGRAM     ::= (ASSIGNMENT)* (LAYOUT)+
