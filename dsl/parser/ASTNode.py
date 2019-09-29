@@ -20,9 +20,10 @@ class ASTNode:
         Base class of ASTNode
     """
 
+    names = []
+
     def __init__(self, list_of_tokens):
         self.tokens = list_of_tokens
-        self.names = []
 
     def parse(self):
         self.next()
@@ -123,9 +124,11 @@ class AssignmentNode(ASTNode):
                 f"unexpected Token {repr(tk)}: expected a string, number or constructor as an assigned value")
 
     def name_check(self):
-        self.names.append(self.var_name)
+        ASTNode.names.append(self.var_name)
         if self.assignment_type == self.TYPE_CONVERT_MAP[Type.VARIABLE] and self.assigned not in self.names:
             raise NameCheckError(self.assigned)
+        if self.assignment_type == self.FUNC:
+            self.assigned.name_check()
 
 
 class ConstructorNode(ASTNode):
@@ -170,7 +173,8 @@ class ConstructorNode(ASTNode):
         return new_assign_node
 
     def name_check(self):
-        return
+        for param in self.params:
+            param.name_check()
 
 
 class LayoutNode(ASTNode):
@@ -179,7 +183,7 @@ class LayoutNode(ASTNode):
         return super().parse()  # TODO
 
     def name_check(self):
-        return
+        return  # TODO
 
 
 class ParseError(Exception):

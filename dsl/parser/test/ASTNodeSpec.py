@@ -4,6 +4,7 @@ from ...tokenizer.Token import *
 from ...tokenizer.Tokenizer import Tokenizer
 from .TestUtil import *
 
+
 class ASTNodeSpec(unittest.TestCase):
 
     def tokenize(self, str):
@@ -33,6 +34,7 @@ class ASTNodeSpec(unittest.TestCase):
             ],
             'layouts': []
         })
+        pgNode.name_check()
 
     def test_multiple_simple_assignments(self):
         program = """
@@ -54,11 +56,11 @@ class ASTNodeSpec(unittest.TestCase):
                     'type': 'AssignmentNode',
                     'var_name': 'some_num',
                     'assigned': 1
-                },{
+                }, {
                     'type': 'AssignmentNode',
                     'var_name': 'some_str',
                     'assigned': "2"
-                },{
+                }, {
                     'type': 'AssignmentNode',
                     'var_name': 'some_var',
                     'assigned': "var1"
@@ -66,6 +68,7 @@ class ASTNodeSpec(unittest.TestCase):
             ],
             'layouts': []
         })
+        self.assertRaises(NameCheckError, pgNode.name_check)
 
     def structurize(self, node):
         """
@@ -89,17 +92,17 @@ class ASTNodeSpec(unittest.TestCase):
                 return {
                     'type': 'AssignmentNode',
                     'var_name': node.var_name,
-                    'assigned': structurize(node.assigned)
+                    'assigned': self.structurize(node.assigned)
                 }
             else:
-                 return {
+                return {
                     'type': 'AssignmentNode',
                     'var_name': node.var_name,
                     'assigned': node.assigned
                 }
-        else: 
+        else:
             return {}
-            
+
 
 if __name__ == '__main__':
     unittest.main()
