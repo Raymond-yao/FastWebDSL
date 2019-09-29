@@ -163,11 +163,15 @@ class LayoutNode(ASTNode):
     def __init__(self, list_of_tokens):
         super().__init__(list_of_tokens)
         self.rows = []
+        self.layoutName = None
 
     def parse(self):
-        if self.next().value != 'Page':
+        nameToken = self.next()
+        if nameToken.is_a(Type.VARIABLE) or nameToken.value == 'Page':
+            self.layoutName = nameToken.value
+        else:
             raise ParseError(
-                "missing \"Page\" keyword")
+                "missing layout name")
         if self.next().value != '{':
             raise ParseError(
                 "missing \"{\"")
@@ -210,12 +214,15 @@ class RowNode(ASTNode):
                 raise ParseError(
                     "unexpected row element")
             # check if reach the end of the Row
-            if not self.has_next():
-                raise ParseError(
-                    "missing \"]\"")
-            elif self.peek().value == ']':
+            if self.__checkRowEnd():
                 self.next()
                 break
+
+    def __checkRowEnd(self):
+        if not self.has_next():
+            raise ParseError(
+                "missing \"]\"")
+        return self.peek().value == ']'
 
 class VarNode(ASTNode):
     def __init__(self, list_of_tokens):

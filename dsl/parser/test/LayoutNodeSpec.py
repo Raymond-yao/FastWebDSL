@@ -14,6 +14,7 @@ class LayoutNodeSpec(TestUtil):
         'layouts': [
             {
                 'type': 'LayoutNode',
+                'layoutName': 'Page',
                 'rows':[
                     {
                         'type': 'RowNode',
@@ -41,6 +42,7 @@ class LayoutNodeSpec(TestUtil):
         'layouts': [
             {
                 'type': 'LayoutNode',
+                'layoutName': 'Page',
                 'rows':[
                     {
                         'type': 'RowNode',
@@ -78,6 +80,7 @@ class LayoutNodeSpec(TestUtil):
         'layouts': [
             {
                 'type': 'LayoutNode',
+                'layoutName': 'Page',
                 'rows':[
                     {
                         'type': 'RowNode',
