@@ -1,6 +1,6 @@
-from Component import *
-from Nav import Nav
-from Header import Header
+from .Component import *
+from .Nav import Nav
+from .Header import Header
 
 class Row(Component):
 

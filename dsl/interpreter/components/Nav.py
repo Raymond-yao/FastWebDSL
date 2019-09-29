@@ -1,10 +1,10 @@
-from Component import *
+from .Component import *
 
 class Nav(Component):
     
     def render(self):
-        return """
-            <Sider style={{{{ height: '100vh', left: 0 }}}}>
+        return f"""
+            <Sider style={{{{ height: '100vh', left: 0, background: 'azure'}}}}>
                 <Menu
                     theme="light"
                     mode="inline">

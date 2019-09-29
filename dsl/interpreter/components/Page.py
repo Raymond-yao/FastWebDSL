@@ -1,8 +1,8 @@
-from Component import *
-from Row import Row
-from Header import *
-from Values import *
-from Nav import *
+from .Component import *
+from .Row import Row
+from .Header import *
+from .Values import *
+from .Nav import *
 
 class Page(Component):
     def __init__(self, rows=[]):
@@ -34,11 +34,3 @@ class Page(Component):
                 document.getElementById("root")
             );
         """
-
-
-# if __name__ == "__main__":
-#     print(Page(
-#         [
-#             [Header()], 
-#             [Nav(), Text("123")]
-#         ]).render())    
