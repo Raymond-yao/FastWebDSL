@@ -3,7 +3,7 @@
 # Test modules --- Please make sure the new test files named "*Spec.py"
 MODULES=$(ls dsl/test/ | grep "Spec" | awk -F '.' '{print $1}')
 # Threshold for test coverage
-THRESHOLD=82
+THRESHOLD=60
 
 echo "-------- Executing Tests Before Commit --------"
 
