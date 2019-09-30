@@ -1,5 +1,6 @@
 from .Component import *
 
+
 class Text(Component):
 
     def __init__(self, text):

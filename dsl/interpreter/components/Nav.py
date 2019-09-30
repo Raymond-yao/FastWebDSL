@@ -1,7 +1,8 @@
 from .Component import *
 
+
 class Nav(Component):
-    
+
     def render(self):
         return f"""
             <Sider style={{{{ height: '100vh', left: 0, background: 'azure'}}}}>

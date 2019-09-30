@@ -2,6 +2,7 @@ from .Component import *
 from .Nav import Nav
 from .Header import Header
 
+
 class Row(Component):
 
     def __init__(self, content=[]):
@@ -17,7 +18,7 @@ class Row(Component):
             between these basic components
         """
         for t in things:
-            if isinstance(t, Nav) or isinstance(t, Header): #TODO: add Content()
+            if isinstance(t, Nav) or isinstance(t, Header):  # TODO: add Content()
                 self.layout_mode = "CLASSIC_MODE"
                 break
 
@@ -34,7 +35,7 @@ class Row(Component):
                 """
             )
         else:
-            avg = 24 // len(self.content) # not robust, should do some check
+            avg = 24 // len(self.content)  # not robust, should do some check
             for thing in self.content:
                 things_to_render.append(
                     f"""<Col span={{{avg}}}>
@@ -49,4 +50,3 @@ class Row(Component):
                 {component}
             </Row>
         """
-

@@ -1,5 +1,6 @@
 from .Component import *
 
+
 class Header(Component):
 
     def __init__(self):
@@ -17,4 +18,3 @@ class Header(Component):
                 </Menu>
             </Header>
         """
-

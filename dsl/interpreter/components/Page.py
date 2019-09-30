@@ -4,6 +4,7 @@ from .Header import *
 from .Values import *
 from .Nav import *
 
+
 class Page(Component):
     def __init__(self, rows=[]):
         super().__init__()
@@ -11,7 +12,7 @@ class Page(Component):
         for r in rows:
             self.rows.append(Row(r))
 
-    def add_row(self, row = []):
+    def add_row(self, row=[]):
         self.rows.append(Row(row))
         return self
 
