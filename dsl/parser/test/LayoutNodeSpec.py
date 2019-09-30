@@ -118,6 +118,51 @@ class LayoutNodeSpec(TestUtil):
         ]
         })
 
+    def test_layout_with_variable_name(self):
+        program = """
+            Page {
+                [new_nav]
+            }
+            new_nav {
+                [Link()]
+            }
+        """
+        self.expectPass(program, {
+        'type': 'ProgramNode',
+        'assignments': [],
+        'layouts': [
+            {
+                'type': 'LayoutNode',
+                'layoutName': 'Page',
+                'rows':[
+                    {
+                        'type': 'RowNode',
+                        'elements': [
+                            {
+                                'type': 'VarNode'
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                'type': 'LayoutNode',
+                'layoutName': 'new_nav',
+                'rows':[
+                    {
+                        'type': 'RowNode',
+                        'elements': [
+                            {
+                                'type': 'ConstructorNode',
+                                'params':[]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+        })
+
     def test_layout_missing_page(self):
         program = """
             {
