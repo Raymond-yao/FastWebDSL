@@ -23,22 +23,37 @@ class ASTNode:
     names = []
     constructor_def = {
         "Nav": [
+            {"name": "size", "expected_type": int, "default": 100},
+            {"name": "colour", "expected_type": str, "default": "black"}
+        ],
+        "Header": [
             {"name": "size", "expected_type": "number", "default": 100},
             {"name": "colour", "expected_type": "string", "default": "black"},
-            {}
+            {"name": "title", "expected_type": "string", "default": "Navigation"}
         ],
-        "Header": []
+        "Content": [
+        ],
+        "Link": [
+            {"name": "ref", "expected_type": "string", "default": ""},
+            {"name": "colour", "expected_type": "string", "default": "black"},
+            {"name": "title", "expected_type": "string", "default": "Navigation"},
+        ],
+        "Image": [
+            {"name": "src", "expected_type": "string", "default": ""}
+        ],
+        "Video": [
+            {"name": "src", "expected_type": "string", "default": ""}
+        ],
+        "Footer": [
+            {"name": "title", "expected_type": "string", "default": ""}
+        ],
+        "Button": [
+            {"name": "title", "expected_type": "string", "default": ""}
+        ],
+        "Page": [
+        ]
     }
 
-    default_nav_attr = {'size': 'small', 'align': 'left', 'background': '#D4F2FC'}
-    default_header_attr = {'title': 'Header', 'background': 'black'}
-    default_content_attr = {}
-    default_link_attr = {}
-    default_image_attr = {}
-    default_video_attr = {}
-    default_footer_attr = {}
-    default_button_attr = {}
-    default_page_attr = {}
 
     def __init__(self, list_of_tokens):
         self.tokens = list_of_tokens
@@ -208,53 +223,14 @@ class ConstructorNode(ASTNode):
 
     def type_check(self, tk):
         if self.params:
-            if tk.value == 'Nav':
-                attr = self.default_nav_attr
-                for param in self.params:
-                    if param.var_name not in attr:
-                        raise TypeCheckError(f"There is no such attribute called {param.var_name} in Nav component")
-            elif tk.value == 'Header':
-                attr = self.default_header_attr
-                for param in self.params:
-                    if param.var_name not in attr:
-                        raise TypeCheckError(f"There is no such attribute called {param.var_name} in Header component")
-            elif tk.value == 'Content':
-                attr = self.default_content_attr
-                for param in self.params:
-                    if param.var_name not in attr:
-                        raise TypeCheckError(f"There is no such attribute called {param.var_name} in Content component")
-            elif tk.value == 'Link':
-                attr = self.default_link_attr
-                for param in self.params:
-                    if param.var_name not in attr:
-                        raise TypeCheckError(f"There is no such attribute called {param.var_name} in Link component")
-            elif tk.value == 'Image':
-                attr = self.default_image_attr
-                for param in self.params:
-                    if param.var_name not in attr:
-                        raise TypeCheckError(f"There is no such attribute called {param.var_name} in Image component")
-            elif tk.value == 'Video':
-                attr = self.default_video_attr
-                for param in self.params:
-                    if param.var_name not in attr:
-                        raise TypeCheckError(f"There is no such attribute called {param.var_name} in Video component")
-            elif tk.value == 'Footer':
-                attr = self.default_footer_attr
-                for param in self.params:
-                    if param.var_name not in attr:
-                        raise TypeCheckError(f"There is no such attribute called {param.var_name} in Footer component")
-            elif tk.value == 'Button':
-                attr = self.default_button_attr
-                for param in self.params:
-                    if param.var_name not in attr:
-                        raise TypeCheckError(f"There is no such attribute called {param.var_name} in Button component")
-            elif tk.value == 'Page':
-                attr = self.default_page_attr
-                for param in self.params:
-                    if param.var_name not in attr:
-                        raise TypeCheckError(f"There is no such attribute called {param.var_name} in Page component")
-            else:
-                raise TypeCheckError(f"No such constructor called {tk.value}")
+            for param in self.params:
+                try:
+                    item = next(item for item in self.constructor_def[tk.value] if item["name"] == param.var_name)
+                except StopIteration:
+                    raise TypeCheckError(f"There is no such attribute called '{param.var_name}' in {tk.value} component")
+                expected_type = item["expected_type"]
+                if not isinstance(param.assigned, expected_type):
+                    raise TypeCheckError(f"The type of {param.var_name} is {type(param.assigned)}, should be {expected_type}.")
 
 
 class LayoutNode(ASTNode):
