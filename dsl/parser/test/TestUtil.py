@@ -27,8 +27,6 @@ class TestUtil(unittest.TestCase):
     def expectPass(self, program, expect):
         pgNode = ProgramNode(self.tokenize(program))
         pgNode.parse()
-        pgNode.name_check()
-        pgNode.type_check()
         self.__validateNodes(pgNode, expect)
 
     def expectPassNameCheck(self, program):
