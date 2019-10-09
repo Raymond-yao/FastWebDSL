@@ -164,18 +164,18 @@ class AssignmentNode(ASTNode):
 
     def name_check(self):
         ASTNode.dereference_dict[self.var_name] = self.assigned
-        if self.assignment_type == self.TYPE_CONVERT_MAP[Type.VARIABLE]:
+        if self.assignment_type == AssignmentNode.VAR:
             if self.assigned not in self.dereference_dict:
                 raise NameCheckError(self.assigned)
             else:
                 ASTNode.dereference_dict[self.var_name] = ASTNode.dereference_dict[self.assigned]
 
         if self.assignment_type == self.FUNC:
-            self.assigned.name_check(self.tk)
+            self.assigned.name_check(self.tk.value)
 
     def type_check(self):
         if self.assignment_type == self.FUNC:
-            self.assigned.type_check(self.tk)
+            self.assigned.type_check(self.tk.value, self.var_name)
 
 
 class ConstructorNode(ASTNode):
@@ -220,11 +220,11 @@ class ConstructorNode(ASTNode):
         new_assign_node.parse()
         return new_assign_node
 
-    def name_check(self, tk):
-        for attr in ASTNode.constructor_def[tk.value]:
+    def name_check(self, constructor_name):
+        for attr in ASTNode.constructor_def[constructor_name]:
             self.attr[attr["name"]] = attr["default"]
         for param in self.params:
-            if param.assignment_type == param.TYPE_CONVERT_MAP[Type.VARIABLE]:
+            if param.assignment_type == AssignmentNode.VAR:
                 if param.assigned not in ASTNode.dereference_dict:
                     raise NameCheckError(param.assigned)
                 else:
@@ -232,22 +232,28 @@ class ConstructorNode(ASTNode):
             else:
                 self.attr[param.var_name] = param.assigned
 
-    def type_check(self, tk):
+    def type_check(self, constructor_name, var_name):
         if self.params:
+            attr_names = list(map(lambda attr_obj: attr_obj["name"], self.constructor_def[constructor_name]))
+            copy = attr_names.copy()
             for param in self.params:
-                try:
-                    item = next(item for item in self.constructor_def[tk.value] if item["name"] == param.var_name)
-                except StopIteration:
+                if param.var_name not in attr_names:
                     raise TypeCheckError(
-                        f"There is no such attribute called '{param.var_name}' in {tk.value} component")
+                        f"There is no such attribute called '{param.var_name}' in {constructor_name} component called '{var_name}'")
+                elif param.var_name not in copy:
+                    raise TypeCheckError(
+                        f"You declared attribute: '{param.var_name}' multiple times in {constructor_name} component "
+                        f"called '{var_name}'.")
+                item = next(item for item in self.constructor_def[constructor_name] if item["name"] == param.var_name)
                 expected_type = item["expected_type"]
-                if param.assignment_type == "VAR":
+                if param.assignment_type == AssignmentNode.VAR:
                     actual_ref = ASTNode.dereference_dict[param.assigned]
                 else:
                     actual_ref = param.assigned
                 if not isinstance(actual_ref, expected_type):
                     raise TypeCheckError(
-                        f"The type of {param.var_name} is {type(actual_ref)}, should be {expected_type}.")
+                        f"In variable '{var_name}', the type of {param.var_name} is {type(actual_ref)}, should be {expected_type}.")
+                copy.remove(param.var_name)
 
 
 class LayoutNode(ASTNode):
@@ -284,6 +290,7 @@ class LayoutNode(ASTNode):
                 self.next()
                 break
 
+
 class RowNode(ASTNode):
     def __init__(self, list_of_tokens):
         super().__init__(list_of_tokens)
@@ -316,6 +323,7 @@ class RowNode(ASTNode):
                 "missing \"]\"")
         return self.peek().value == ']'
 
+
 class VarNode(ASTNode):
     def __init__(self, list_of_tokens):
         super().__init__(list_of_tokens)
@@ -325,7 +333,10 @@ class VarNode(ASTNode):
         self.varName = self.next().value
 
     def name_check(self):
-        return  # TODO
+        pass  # TODO
+
+    def type_check(self):
+        pass  # TODO
 
 
 class ParseError(Exception):

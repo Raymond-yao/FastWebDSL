@@ -2,7 +2,7 @@ import unittest
 from dsl.parser.test.TestUtil import TestUtil
 
 
-class MyTestCase(TestUtil):
+class TypeCheckSpec(TestUtil):
     def test_type_check_pass_attr_type(self):
         program = """
                 a = Nav()
@@ -31,6 +31,21 @@ class MyTestCase(TestUtil):
                 a = Nav(size = some_var, colour = some_var2)
                 """
         self.expectPassTypeCheck(program)
+
+    def test_type_check_fail_multiple_declaration(self):
+        program = """
+                a = 1
+                b = "black"
+                nav = Nav(size = a, size = a)
+                """
+        self.expectFailTypeCheck(program)
+
+    def test_type_check_fail_multiple_declaration_complex(self):
+        program = """
+                nav = Nav(size = 1, colour = "black")
+                nav2 = Nav(size = 1, colour = "black", size = 2)
+                """
+        self.expectFailTypeCheck(program)
 
 
 if __name__ == '__main__':
