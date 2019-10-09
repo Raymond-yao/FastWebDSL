@@ -10,12 +10,12 @@ class ASTNodeSpec(unittest.TestCase):
     def tokenize(self, str):
         return Tokenizer().read(str)
 
-    def test_ProgramNode_invalid(self):
+    def test_program_node_invalid(self):
         invalids = [[Eq()], [Num(123)], [Str("123")], [Comma()], [Bracket("(")]]
         for invalid_p in invalids:
             self.assertRaises(ParseError, ProgramNode(invalid_p).parse)
 
-    def test_ProgramNode_normal(self):
+    def test_program_node_normal(self):
         program = """
 
             abc = "123"
@@ -37,13 +37,13 @@ class ASTNodeSpec(unittest.TestCase):
 
     def test_multiple_simple_assignments(self):
         program = """
-        
+
         some_num = 1
         some_str = "2"
-        
-        
+
+
         some_var = var1
-        
+
         """
         pgNode = ProgramNode(self.tokenize(program))
         pgNode.parse()
