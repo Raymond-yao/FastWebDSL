@@ -34,7 +34,6 @@ class ASTNodeSpec(unittest.TestCase):
             ],
             'layouts': []
         })
-        pgNode.name_check()
 
     def test_multiple_simple_assignments(self):
         program = """

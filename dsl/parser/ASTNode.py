@@ -20,40 +20,39 @@ class ASTNode:
         Base class of ASTNode
     """
 
-    names = []
+    dereference_dict = {}
     constructor_def = {
         "Nav": [
             {"name": "size", "expected_type": int, "default": 100},
             {"name": "colour", "expected_type": str, "default": "black"}
         ],
         "Header": [
-            {"name": "size", "expected_type": "number", "default": 100},
-            {"name": "colour", "expected_type": "string", "default": "black"},
-            {"name": "title", "expected_type": "string", "default": "Navigation"}
+            {"name": "size", "expected_type": int, "default": 100},
+            {"name": "colour", "expected_type": str, "default": "black"},
+            {"name": "title", "expected_type": str, "default": "Navigation"}
         ],
         "Content": [
         ],
         "Link": [
-            {"name": "ref", "expected_type": "string", "default": ""},
-            {"name": "colour", "expected_type": "string", "default": "black"},
-            {"name": "title", "expected_type": "string", "default": "Navigation"},
+            {"name": "ref", "expected_type": str, "default": ""},
+            {"name": "colour", "expected_type": str, "default": "black"},
+            {"name": "title", "expected_type": str, "default": "Navigation"},
         ],
         "Image": [
-            {"name": "src", "expected_type": "string", "default": ""}
+            {"name": "src", "expected_type": str, "default": ""}
         ],
         "Video": [
-            {"name": "src", "expected_type": "string", "default": ""}
+            {"name": "src", "expected_type": str, "default": ""}
         ],
         "Footer": [
-            {"name": "title", "expected_type": "string", "default": ""}
+            {"name": "title", "expected_type": str, "default": ""}
         ],
         "Button": [
-            {"name": "title", "expected_type": "string", "default": ""}
+            {"name": "title", "expected_type": str, "default": ""}
         ],
         "Page": [
         ]
     }
-
 
     def __init__(self, list_of_tokens):
         self.tokens = list_of_tokens
@@ -164,11 +163,15 @@ class AssignmentNode(ASTNode):
                 f"unexpected Token {repr(self.tk)}: expected a string, number or constructor as an assigned value")
 
     def name_check(self):
-        ASTNode.names.append(self.var_name)
-        if self.assignment_type == self.TYPE_CONVERT_MAP[Type.VARIABLE] and self.assigned not in self.names:
-            raise NameCheckError(self.assigned)
+        ASTNode.dereference_dict[self.var_name] = self.assigned
+        if self.assignment_type == self.TYPE_CONVERT_MAP[Type.VARIABLE]:
+            if self.assigned not in self.dereference_dict:
+                raise NameCheckError(self.assigned)
+            else:
+                ASTNode.dereference_dict[self.var_name] = ASTNode.dereference_dict[self.assigned]
+
         if self.assignment_type == self.FUNC:
-            self.assigned.name_check()
+            self.assigned.name_check(self.tk)
 
     def type_check(self):
         if self.assignment_type == self.FUNC:
@@ -217,9 +220,17 @@ class ConstructorNode(ASTNode):
         new_assign_node.parse()
         return new_assign_node
 
-    def name_check(self):
+    def name_check(self, tk):
+        for attr in ASTNode.constructor_def[tk.value]:
+            self.attr[attr["name"]] = attr["default"]
         for param in self.params:
-            param.name_check()
+            if param.assignment_type == param.TYPE_CONVERT_MAP[Type.VARIABLE]:
+                if param.assigned not in ASTNode.dereference_dict:
+                    raise NameCheckError(param.assigned)
+                else:
+                    self.attr[param.var_name] = ASTNode.dereference_dict[param.assigned]
+            else:
+                self.attr[param.var_name] = param.assigned
 
     def type_check(self, tk):
         if self.params:
@@ -227,10 +238,16 @@ class ConstructorNode(ASTNode):
                 try:
                     item = next(item for item in self.constructor_def[tk.value] if item["name"] == param.var_name)
                 except StopIteration:
-                    raise TypeCheckError(f"There is no such attribute called '{param.var_name}' in {tk.value} component")
+                    raise TypeCheckError(
+                        f"There is no such attribute called '{param.var_name}' in {tk.value} component")
                 expected_type = item["expected_type"]
-                if not isinstance(param.assigned, expected_type):
-                    raise TypeCheckError(f"The type of {param.var_name} is {type(param.assigned)}, should be {expected_type}.")
+                if param.assignment_type == "VAR":
+                    actual_ref = ASTNode.dereference_dict[param.assigned]
+                else:
+                    actual_ref = param.assigned
+                if not isinstance(actual_ref, expected_type):
+                    raise TypeCheckError(
+                        f"The type of {param.var_name} is {type(actual_ref)}, should be {expected_type}.")
 
 
 class LayoutNode(ASTNode):
