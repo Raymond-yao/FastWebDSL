@@ -29,6 +29,39 @@ class TestUtil(unittest.TestCase):
         pgNode.parse()
         self.__validateNodes(pgNode, expect)
 
+    def expectPassNameCheck(self, program):
+        pgNode = ProgramNode(self.tokenize(program))
+        pgNode.parse()
+        pgNode.name_check()
+
+    def expectFailNameCheck(self, program):
+        pgNode = ProgramNode(self.tokenize(program))
+        pgNode.parse()
+
+        try:
+            pgNode.name_check()
+            self.fail(
+                "Failed --- unexpected name checking success for program %s" % program)
+        except NameCheckError:
+            pass
+
+    def expectPassTypeCheck(self, program):
+        pgNode = ProgramNode(self.tokenize(program))
+        pgNode.parse()
+        pgNode.name_check()
+        pgNode.type_check()
+
+    def expectFailTypeCheck(self, program):
+        pgNode = ProgramNode(self.tokenize(program))
+        pgNode.parse()
+        pgNode.name_check()
+        try:
+            pgNode.type_check()
+            self.fail(
+                "Failed --- unexpected type checking success for program %s" % program)
+        except TypeCheckError:
+            pass
+
     def expectFail(self, program):
         try:
             if DEBUGGING:

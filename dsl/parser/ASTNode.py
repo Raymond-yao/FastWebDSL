@@ -1,4 +1,5 @@
 from ..tokenizer.Token import *
+
 """
 EBNF
     PROGRAM     ::= (ASSIGNMENT)* (LAYOUT)+
@@ -18,6 +19,40 @@ class ASTNode:
     """
         Base class of ASTNode
     """
+
+    dereference_dict = {}
+    constructor_def = {
+        "Nav": [
+            {"name": "size", "expected_type": int, "default": 100},
+            {"name": "colour", "expected_type": str, "default": "black"}
+        ],
+        "Header": [
+            {"name": "size", "expected_type": int, "default": 100},
+            {"name": "colour", "expected_type": str, "default": "black"},
+            {"name": "title", "expected_type": str, "default": "Navigation"}
+        ],
+        "Content": [
+        ],
+        "Link": [
+            {"name": "ref", "expected_type": str, "default": ""},
+            {"name": "colour", "expected_type": str, "default": "black"},
+            {"name": "title", "expected_type": str, "default": "Navigation"},
+        ],
+        "Image": [
+            {"name": "src", "expected_type": str, "default": ""}
+        ],
+        "Video": [
+            {"name": "src", "expected_type": str, "default": ""}
+        ],
+        "Footer": [
+            {"name": "title", "expected_type": str, "default": ""}
+        ],
+        "Button": [
+            {"name": "title", "expected_type": str, "default": ""}
+        ],
+        "Page": [
+        ]
+    }
 
     def __init__(self, list_of_tokens):
         self.tokens = list_of_tokens
@@ -67,9 +102,20 @@ class ProgramNode(ASTNode):
                 raise ParseError(
                     f"unexpected Token {repr(tk)}: expected a variable or function keyword")
 
+    def name_check(self):
+        for a in self.assignments:
+            a.name_check()
+        for l in self.layouts:
+            l.name_check()
+
+    def type_check(self):
+        for a in self.assignments:
+            a.type_check()
+        for l in self.layouts:
+            l.type_check()
+
 
 class AssignmentNode(ASTNode):
-
     STRING = "STRING"
     FUNC = "FUNC"
     NUM = "NUM"
@@ -87,6 +133,7 @@ class AssignmentNode(ASTNode):
         self.var_name = None
         self.assigned = None
         self.assignment_type = None
+        self.tk = None
 
     def parse(self):
         if len(self.tokens) < 3:
@@ -102,24 +149,40 @@ class AssignmentNode(ASTNode):
             raise ParseError(
                 "reach the end of input unexpectedly, not a valid assignment statement")
 
-        tk = self.peek()
-        if tk.is_a(Type.RESERVED):
+        self.tk = self.peek()
+        if self.tk.is_a(Type.RESERVED):
             self.assignment_type = self.FUNC
             self.assigned = ConstructorNode(self.tokens)
             self.assigned.parse()
-        elif tk.is_a(Type.STRING) or tk.is_a(Type.NUMBER) or tk.is_a(Type.VARIABLE):
-            self.assignment_type = self.TYPE_CONVERT_MAP[tk.type]
-            self.assigned = tk.value
+        elif self.tk.is_a(Type.STRING) or self.tk.is_a(Type.NUMBER) or self.tk.is_a(Type.VARIABLE):
+            self.assignment_type = self.TYPE_CONVERT_MAP[self.tk.type]
+            self.assigned = self.tk.value
             self.next()
         else:
             raise ParseError(
-                f"unexpected Token {repr(tk)}: expected a string, number or constructor as an assigned value")
+                f"unexpected Token {repr(self.tk)}: expected a string, number or constructor as an assigned value")
+
+    def name_check(self):
+        ASTNode.dereference_dict[self.var_name] = self.assigned
+        if self.assignment_type == AssignmentNode.VAR:
+            if self.assigned not in self.dereference_dict:
+                raise NameCheckError(self.assigned)
+            else:
+                ASTNode.dereference_dict[self.var_name] = ASTNode.dereference_dict[self.assigned]
+
+        if self.assignment_type == self.FUNC:
+            self.assigned.name_check(self.tk.value)
+
+    def type_check(self):
+        if self.assignment_type == self.FUNC:
+            self.assigned.type_check(self.tk.value, self.var_name)
 
 
 class ConstructorNode(ASTNode):
     def __init__(self, list_of_tokens):
         super().__init__(list_of_tokens)
         self.params = []
+        self.attr = {}
 
     def parse(self):
         if len(self.tokens) < 3 or Bracket("(") not in self.tokens or Bracket(")") not in self.tokens:
@@ -127,7 +190,7 @@ class ConstructorNode(ASTNode):
                 "unexpected line end: constructor declaration must be in this form: Constructor()")
         if self.tokens.count(Bracket("(")) != self.tokens.count(Bracket(")")):
             raise ParseError(
-                "unexpected line end: number of opening and closing bracket does not mutch")
+                "unexpected line end: number of opening and closing bracket does not match")
         # I'll use a copy of self.token to create assignment node
         # then use "move" to pop that much of tokens from self.token
         move = 3
@@ -148,7 +211,7 @@ class ConstructorNode(ASTNode):
                 comma = constructorParam.index(Comma())
                 self.params.append(self.__generateParam(
                     constructorParam[:comma]))
-                constructorParam = constructorParam[comma+1:]
+                constructorParam = constructorParam[comma + 1:]
             self.params.append(self.__generateParam(constructorParam))
         [self.next() for i in range(move)]
 
@@ -156,6 +219,41 @@ class ConstructorNode(ASTNode):
         new_assign_node = AssignmentNode(tokenList)
         new_assign_node.parse()
         return new_assign_node
+
+    def name_check(self, constructor_name):
+        for attr in ASTNode.constructor_def[constructor_name]:
+            self.attr[attr["name"]] = attr["default"]
+        for param in self.params:
+            if param.assignment_type == AssignmentNode.VAR:
+                if param.assigned not in ASTNode.dereference_dict:
+                    raise NameCheckError(param.assigned)
+                else:
+                    self.attr[param.var_name] = ASTNode.dereference_dict[param.assigned]
+            else:
+                self.attr[param.var_name] = param.assigned
+
+    def type_check(self, constructor_name, var_name):
+        if self.params:
+            attr_names = list(map(lambda attr_obj: attr_obj["name"], self.constructor_def[constructor_name]))
+            copy = attr_names.copy()
+            for param in self.params:
+                if param.var_name not in attr_names:
+                    raise TypeCheckError(
+                        f"There is no such attribute called '{param.var_name}' in {constructor_name} component called '{var_name}'")
+                elif param.var_name not in copy:
+                    raise TypeCheckError(
+                        f"You declared attribute: '{param.var_name}' multiple times in {constructor_name} component "
+                        f"called '{var_name}'.")
+                item = next(item for item in self.constructor_def[constructor_name] if item["name"] == param.var_name)
+                expected_type = item["expected_type"]
+                if param.assignment_type == AssignmentNode.VAR:
+                    actual_ref = ASTNode.dereference_dict[param.assigned]
+                else:
+                    actual_ref = param.assigned
+                if not isinstance(actual_ref, expected_type):
+                    raise TypeCheckError(
+                        f"In variable '{var_name}', the type of {param.var_name} is {type(actual_ref)}, should be {expected_type}.")
+                copy.remove(param.var_name)
 
 
 class LayoutNode(ASTNode):
@@ -192,6 +290,7 @@ class LayoutNode(ASTNode):
                 self.next()
                 break
 
+
 class RowNode(ASTNode):
     def __init__(self, list_of_tokens):
         super().__init__(list_of_tokens)
@@ -224,6 +323,7 @@ class RowNode(ASTNode):
                 "missing \"]\"")
         return self.peek().value == ']'
 
+
 class VarNode(ASTNode):
     def __init__(self, list_of_tokens):
         super().__init__(list_of_tokens)
@@ -232,7 +332,24 @@ class VarNode(ASTNode):
     def parse(self):
         self.varName = self.next().value
 
+    def name_check(self):
+        pass  # TODO
+
+    def type_check(self):
+        pass  # TODO
+
 
 class ParseError(Exception):
+    def __init__(self, message):
+        self.message = message
+
+
+class NameCheckError(Exception):
+    def __init__(self, message):
+        message = "You didn't declare : " + message
+        super().__init__(message)
+
+
+class TypeCheckError(Exception):
     def __init__(self, message):
         self.message = message

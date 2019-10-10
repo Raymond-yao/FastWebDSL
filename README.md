@@ -56,7 +56,7 @@ specify layout structures inside a layout.
 
 ## Temp EBNF
 
-This is the ENNF we defined so far.
+This is the EBNF we defined so far.
 
 ```
 EBNF
