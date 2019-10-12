@@ -10,6 +10,8 @@ echo "-------- Parser Tests --------"
 coverage run -m dsl.parser.test.ASTNodeSpec
 coverage run -m dsl.parser.test.ConstructorNodeSpec
 coverage run -m dsl.parser.test.LayoutNodeSpec
+coverage run -m dsl.parser.test.NameCheckSpec
+coverage run -m dsl.parser.test.TypeCheckSpec
 
 coverage report
 TEMP=$(coverage report | grep "TOTAL" | awk '{print $4}')

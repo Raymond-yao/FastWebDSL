@@ -60,6 +60,12 @@ class ASTNode:
     def parse(self):
         self.next()
 
+    def name_check(self):
+        pass
+
+    def type_check(self):
+        pass
+
     def next(self):
         return self.tokens.pop(0)
 
@@ -119,8 +125,7 @@ class AssignmentNode(ASTNode):
     STRING = "STRING"
     FUNC = "FUNC"
     NUM = "NUM"
-    VAR = "VAR"  # we allow a1 = a2; a2 = a3 ... this brings challenges to determine referencing loop loool, e.g. a1 = a2; a2 = a1
-    # (well not really hard, this is actually a graph loop detection from a fixed starting point, leetcode easy)
+    VAR = "VAR"
 
     TYPE_CONVERT_MAP = {
         Type.STRING: STRING,
@@ -171,11 +176,14 @@ class AssignmentNode(ASTNode):
                 ASTNode.dereference_dict[self.var_name] = ASTNode.dereference_dict[self.assigned]
 
         if self.assignment_type == self.FUNC:
-            self.assigned.name_check(self.tk.value)
+            constructor = ASTNode.dereference_dict[self.var_name]
+            # extend the structure to also memorize layout node later
+            ASTNode.dereference_dict[self.var_name] = {"constructor": constructor}
+            self.assigned.name_check()
 
     def type_check(self):
         if self.assignment_type == self.FUNC:
-            self.assigned.type_check(self.tk.value, self.var_name)
+            self.assigned.type_check()
 
 
 class ConstructorNode(ASTNode):
@@ -183,8 +191,10 @@ class ConstructorNode(ASTNode):
         super().__init__(list_of_tokens)
         self.params = []
         self.attr = {}
+        self.constructor_name = None
 
     def parse(self):
+        self.constructor_name = self.peek().value
         if len(self.tokens) < 3 or Bracket("(") not in self.tokens or Bracket(")") not in self.tokens:
             raise ParseError(
                 "unexpected line end: constructor declaration must be in this form: Constructor()")
@@ -220,8 +230,8 @@ class ConstructorNode(ASTNode):
         new_assign_node.parse()
         return new_assign_node
 
-    def name_check(self, constructor_name):
-        for attr in ASTNode.constructor_def[constructor_name]:
+    def name_check(self):
+        for attr in ASTNode.constructor_def[self.constructor_name]:
             self.attr[attr["name"]] = attr["default"]
         for param in self.params:
             if param.assignment_type == AssignmentNode.VAR:
@@ -232,19 +242,18 @@ class ConstructorNode(ASTNode):
             else:
                 self.attr[param.var_name] = param.assigned
 
-    def type_check(self, constructor_name, var_name):
+    def type_check(self):
         if self.params:
-            attr_names = list(map(lambda attr_obj: attr_obj["name"], self.constructor_def[constructor_name]))
+            attr_names = list(map(lambda attr_obj: attr_obj["name"], self.constructor_def[self.constructor_name]))
             copy = attr_names.copy()
             for param in self.params:
                 if param.var_name not in attr_names:
                     raise TypeCheckError(
-                        f"There is no such attribute called '{param.var_name}' in {constructor_name} component called '{var_name}'")
+                        f"There is no such attribute called '{param.var_name}' in {self.constructor_name}")
                 elif param.var_name not in copy:
                     raise TypeCheckError(
-                        f"You declared attribute: '{param.var_name}' multiple times in {constructor_name} component "
-                        f"called '{var_name}'.")
-                item = next(item for item in self.constructor_def[constructor_name] if item["name"] == param.var_name)
+                        f"You declared attribute: '{param.var_name}' multiple times in {self.constructor_name} component ")
+                item = next(item for item in self.constructor_def[self.constructor_name] if item["name"] == param.var_name)
                 expected_type = item["expected_type"]
                 if param.assignment_type == AssignmentNode.VAR:
                     actual_ref = ASTNode.dereference_dict[param.assigned]
@@ -252,7 +261,7 @@ class ConstructorNode(ASTNode):
                     actual_ref = param.assigned
                 if not isinstance(actual_ref, expected_type):
                     raise TypeCheckError(
-                        f"In variable '{var_name}', the type of {param.var_name} is {type(actual_ref)}, should be {expected_type}.")
+                        f"The type of {param.var_name} is {type(actual_ref)}, should be {expected_type}.")
                 copy.remove(param.var_name)
 
 
@@ -289,7 +298,25 @@ class LayoutNode(ASTNode):
             elif self.peek().value == '}':
                 self.next()
                 break
+    
+    def name_check(self):
+        if self.layoutName != "Page" and not self.layoutName in ASTNode.dereference_dict:
+            raise NameCheckError(f"Unknown layout variable name {self.layoutName} \n")
+        elif self.layoutName != "Page":
+            val = ASTNode.dereference_dict[self.layoutName]
+            if not isinstance(val, dict): 
+                # this check is actually a typecheck, I decide to put it here since we want to have dereference_dict done
+                # after name_check, but it does not make sense to assign a layout to Non-constructor
+                raise TypeCheckError("Assigning a layout to a non-constructor variable")
+            ASTNode.dereference_dict[self.layoutName]["layout"] = self
 
+
+        for r in self.rows:
+            r.name_check()
+
+    def type_check(self):
+        for r in self.rows:
+            r.type_check()
 
 class RowNode(ASTNode):
     def __init__(self, list_of_tokens):
@@ -299,19 +326,20 @@ class RowNode(ASTNode):
     def parse(self):
         while self.has_next():
             tk = self.peek()
+            node = None
             if tk.is_a(Type.RESERVED):
                 node = ConstructorNode(self.tokens)
-                self.elements.append(node)
-                node.parse()
             elif tk.is_a(Type.VARIABLE):
                 node = VarNode(self.tokens)
-                self.elements.append(node)
-                node.parse()
             elif tk.is_a(Type.STRING):
-                self.elements.append(tk.value)
+                node = TextNode(self.tokens)                
             else:
                 raise ParseError(
                     "unexpected row element")
+
+            self.elements.append(node)
+            node.parse()
+
             # check if reach the end of the Row
             if self.__checkRowEnd():
                 self.next()
@@ -323,6 +351,13 @@ class RowNode(ASTNode):
                 "missing \"]\"")
         return self.peek().value == ']'
 
+    def name_check(self):
+       for e in self.elements:
+            e.name_check()
+
+    def type_check(self):
+        for e in self.elements:
+            e.type_check()
 
 class VarNode(ASTNode):
     def __init__(self, list_of_tokens):
@@ -333,11 +368,32 @@ class VarNode(ASTNode):
         self.varName = self.next().value
 
     def name_check(self):
-        pass  # TODO
+       if not self.varName in ASTNode.dereference_dict:
+           raise NameCheckError(f"Unknown layout variable: {self.varName}")
 
     def type_check(self):
-        pass  # TODO
+        value = ASTNode.dereference_dict[self.varName]
+        types = [TextNode, ConstructorNode, VarNode]
+        if not type(value) in types:
+            raise TypeCheckError(f"Unexpected variable:{self.varName} with wrong type:{type(value)} in a layout row \n")
 
+class TextNode(ASTNode):
+     def __init__(self, list_of_tokens):
+        super().__init__(list_of_tokens)
+        self.text = None
+
+     def parse(self):
+        self.text = self.next().value
+
+def parse(token_list):
+    ast = ProgramNode(token_list)
+    ast.parse()
+    return ast
+
+def check(ast):
+    ast.name_check()
+    ast.type_check()
+    return ast
 
 class ParseError(Exception):
     def __init__(self, message):

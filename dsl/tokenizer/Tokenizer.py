@@ -164,3 +164,11 @@ class Tokenizer:
 
     def add_token(self, token):
         self.list_of_tokens.append(token)
+
+
+def tokenize(content ,is_file_path = True):
+    t = Tokenizer()
+    if is_file_path:
+        return t.read_file(content)
+    else:
+        return t.read(content)

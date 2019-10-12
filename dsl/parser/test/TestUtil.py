@@ -30,11 +30,20 @@ class TestUtil(unittest.TestCase):
         self.__validateNodes(pgNode, expect)
 
     def expectPassNameCheck(self, program):
+        ASTNode.dereference_dict = {}
         pgNode = ProgramNode(self.tokenize(program))
         pgNode.parse()
         pgNode.name_check()
 
+    def expectPassNameCheckWithEnv(self, program, expected_env):
+        ASTNode.dereference_dict = {}
+        pgNode = ProgramNode(self.tokenize(program))
+        pgNode.parse()
+        pgNode.name_check()
+        self.__validateEnv(ASTNode.dereference_dict, expected_env)
+
     def expectFailNameCheck(self, program):
+        ASTNode.dereference_dict = {}
         pgNode = ProgramNode(self.tokenize(program))
         pgNode.parse()
 
@@ -46,12 +55,14 @@ class TestUtil(unittest.TestCase):
             pass
 
     def expectPassTypeCheck(self, program):
+        ASTNode.dereference_dict = {}
         pgNode = ProgramNode(self.tokenize(program))
         pgNode.parse()
         pgNode.name_check()
         pgNode.type_check()
 
     def expectFailTypeCheck(self, program):
+        ASTNode.dereference_dict = {}
         pgNode = ProgramNode(self.tokenize(program))
         pgNode.parse()
         pgNode.name_check()
@@ -72,6 +83,28 @@ class TestUtil(unittest.TestCase):
                 "Failed --- unexpected parsing success for program %s" % program)
         except ParseError:
             pass
+
+    def __validateEnv(self, env, expect):
+        keys_in_env = list(env.keys())
+        keys_in_expect = list(expect.keys())
+
+        self.assertEqual(keys_in_env, keys_in_expect)
+        for k in keys_in_env:
+            expect_val = expect[k]
+            actual_val = env[k]
+            if isinstance(expect_val, dict):
+                if not isinstance(actual_val, dict):
+                    self.fail("not a dict in actual env")
+                if not "constructor" in actual_val:
+                    self.fail("missing constructor key in actual env")
+                self.__validateNodes(actual_val["constructor"], expect_val["constructor"])
+
+                if "layout" in expect_val:
+                    if not "layout" in actual_val:
+                        self.fail("missing layout")
+                    self.__validateNodes(actual_val["layout"], expect_val["layout"])
+            else:
+                self.assertEqual(expect_val, actual_val)
 
     def __validateNodes(self, parsedNode, expect):
         for key in expect:
