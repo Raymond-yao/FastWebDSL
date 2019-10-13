@@ -213,8 +213,11 @@ class LayoutNodeSpec(TestUtil):
                         'type': 'RowNode',
                         'elements': [
                             {
-                                'type': 'TextNode',
-                                'text': '123'
+                                'type': 'ConstructorNode',
+                                'constructor_name': "Text",
+                                "params": [
+                                    {'type': "AssignmentNode", "assignment_type": "STRING", "var_name": "text", "assigned": '123'}
+                                ]
                             }
                         ]
                     }

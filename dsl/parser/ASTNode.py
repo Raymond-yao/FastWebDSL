@@ -50,7 +50,9 @@ class ASTNode:
         "Button": [
             {"name": "title", "expected_type": str, "default": ""}
         ],
-        "Page": [
+        "Text": [
+            {"name": "text", "expected_type": str, "default": ""},
+            {"name": "colour", "expected_type": str, "default": "black"}
         ]
     }
 
@@ -308,7 +310,10 @@ class LayoutNode(ASTNode):
                 # this check is actually a typecheck, I decide to put it here since we want to have dereference_dict done
                 # after name_check, but it does not make sense to assign a layout to Non-constructor
                 raise TypeCheckError("Assigning a layout to a non-constructor variable")
-            ASTNode.dereference_dict[self.layoutName]["layout"] = self
+            val["layout"] = self
+            self.layoutType = val["constructor"].constructor_name
+        else:
+            self.layoutType = 'Page'
 
 
         for r in self.rows:
@@ -332,7 +337,9 @@ class RowNode(ASTNode):
             elif tk.is_a(Type.VARIABLE):
                 node = VarNode(self.tokens)
             elif tk.is_a(Type.STRING):
-                node = TextNode(self.tokens)                
+                # we don't want to handle this separately, this is 
+                # just a syntax sugar of Text() constructor with default colour
+                node = self.wrap_text_with_constructor(tk.value)                
             else:
                 raise ParseError(
                     "unexpected row element")
@@ -344,6 +351,16 @@ class RowNode(ASTNode):
             if self.__checkRowEnd():
                 self.next()
                 break
+
+    def wrap_text_with_constructor(self, string_to_wrap):
+        # if a user choose to use plain string instead of text constructor, we should
+        # wrap it with a Text() constructor. However, I am super lazy ... so I decide to
+        # hack it by prepending a list of tokens in the front of tokenList
+        construcor = [Reserved("Text"), Bracket("("), Var("text"), Eq(), Str(string_to_wrap), Bracket(")")]
+        self.next()
+        new_tokens = construcor + self.tokens
+        return ConstructorNode(new_tokens)
+
 
     def __checkRowEnd(self):
         if not self.has_next():
@@ -373,17 +390,9 @@ class VarNode(ASTNode):
 
     def type_check(self):
         value = ASTNode.dereference_dict[self.varName]
-        types = [TextNode, ConstructorNode, VarNode]
+        types = [dict, str]
         if not type(value) in types:
             raise TypeCheckError(f"Unexpected variable:{self.varName} with wrong type:{type(value)} in a layout row \n")
-
-class TextNode(ASTNode):
-     def __init__(self, list_of_tokens):
-        super().__init__(list_of_tokens)
-        self.text = None
-
-     def parse(self):
-        self.text = self.next().value
 
 def parse(token_list):
     ast = ProgramNode(token_list)
