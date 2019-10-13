@@ -1,21 +1,21 @@
 #!/bin/bash
 set -e
 
-echo "-------- Executing Tests Before Commit --------"
-echo ""
-echo "-------- Tokenizer Tests --------"
-coverage run -m dsl.tokenizer.test.TokenizerSpec
-echo ""
-echo "-------- Parser Tests --------"
-coverage run -m dsl.parser.test.ASTNodeSpec
-coverage run -m dsl.parser.test.ConstructorNodeSpec
-coverage run -m dsl.parser.test.LayoutNodeSpec
-coverage run -m dsl.parser.test.NameCheckSpec
-coverage run -m dsl.parser.test.TypeCheckSpec
-coverage run -m dsl.interpreter.test.InterpreterSpec
+# Test script for validating functionality and code coverage
 
-coverage report
-TEMP=$(coverage report | grep "TOTAL" | awk '{print $4}')
-COVERAGE=$(echo "${TEMP/\%/$NON_EXIST}")
-CODE=$(test $COVERAGE -ge 60)
-exit $CODE
+calculateCoverage() {
+    echo "-------- Runing $1 $2 Test --------"
+    coverage run -m "dsl.$1.test.$2"
+    coverage report
+}
+
+echo "-------- Executing Tests Before Commit --------"
+
+# Note: Test modules --- Please make sure actual tests are named with "*Spec.py"
+MODULES=("tokenizer" "parser" "interpreter")
+for MODULE in "tokenizer" "parser" "interpreter"; do
+    SPECS=$(ls dsl/$MODULE/test/ | grep "Spec" | awk -F '.' '{print $1}')
+    for SPEC in $SPECS; do
+        calculateCoverage $MODULE $SPEC
+    done;
+done
