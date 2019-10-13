@@ -3,9 +3,6 @@ from .Component import *
 
 class Header(Component):
 
-    def __init__(self):
-        super().__init__()
-
     def render(self):
         return f"""
             <Header style={{{{ lineHeight: '64px', background:"azure" }}}}>

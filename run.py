@@ -20,10 +20,9 @@ if __name__ == "__main__":
     
     """
 
-    
     jsx = evaluate(
-            check(
-                parse(
-                    tokenize(
-                        program))))
+        check(
+            parse(
+                tokenize(
+                    program))))
     print(jsx)

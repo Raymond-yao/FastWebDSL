@@ -26,7 +26,7 @@ class RealComponentFactory(ComponentFactory):
 
     def __init__(self):
         super().__init__()
-        self. COMPONENTS = {
+        self.COMPONENTS = {
             "Page": Page,
             "Nav": Nav,
             "Header": Header,
