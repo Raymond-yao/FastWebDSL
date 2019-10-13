@@ -194,5 +194,34 @@ class LayoutNodeSpec(TestUtil):
             }
         """
         self.expectFail(program)
+
+    def test_missing_page(self):
+        program = """ 
+            unknown {
+                ["123"]
+            }
+        """
+        self.expectPass(program, {
+        'type': 'ProgramNode',
+        'assignments': [],
+        'layouts': [
+            {
+                'type': 'LayoutNode',
+                'layoutName': 'unknown',
+                'rows':[
+                    {
+                        'type': 'RowNode',
+                        'elements': [
+                            {
+                                'type': 'ConstructorNode',
+                                'constructor_name': "Text",
+                                "params": [
+                                    {'type': "AssignmentNode", "assignment_type": "STRING", "var_name": "text", "assigned": '123'}
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }]})
 if __name__ == '__main__':
     unittest.main()

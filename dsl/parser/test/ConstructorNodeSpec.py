@@ -44,6 +44,7 @@ class ConstructorNodeSpec(TestUtil):
                     'assignment_type': 'FUNC',
                     'assigned': {
                         'type': "ConstructorNode",
+                        'constructor_name': 'Nav',
                         'params': []
                     }
                 }
@@ -63,6 +64,7 @@ class ConstructorNodeSpec(TestUtil):
                     'assignment_type': 'FUNC',
                     'assigned': {
                         'type': 'ConstructorNode',
+                        'constructor_name': 'Nav',
                         'params': [
                             {
                                 'type': 'AssignmentNode',

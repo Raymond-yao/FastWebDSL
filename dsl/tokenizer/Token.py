@@ -21,7 +21,7 @@ class Type(Enum):
     COMMA = 8
 
 
-RESERVED_NAME = {"Nav", "Header", "Content", "Link",
+RESERVED_NAME = {"Nav", "Header", "Content", "Link", "Text",
                  "Image", "Video", "Footer", "Button", "Page"}
 
 
