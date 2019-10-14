@@ -1,0 +1,21 @@
+Page {
+    [newHeader]
+    [leftNav Content() rightNav]
+    [Footer()]
+}
+
+newHeader   = Header(title="Header")
+leftNav     = Nav(background="#80C2FF")
+rightNav    = Nav(size="small", background="#D4F2FC")
+
+leftNav {
+    [Link(text="Link 1", to="www.google.ca")]
+    [Link(text="Link 2", to="www.google.ca")]
+    [Link(text="Link 3", to="www.google.ca")]
+}
+
+rightNav {
+    [Link(text="Link 4", to="www.google.ca")]
+    [Link(text="Link 5", to="www.google.ca")]
+}
+

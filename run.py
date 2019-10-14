@@ -8,6 +8,7 @@ from dsl.interpreter.Interpreter import check, evaluate
 
 def main(program):
     reactComponet = evaluate(check(parse(tokenize(program))))
+    print(reactComponet)
 
 
 if len(sys.argv) != 2:
@@ -21,18 +22,3 @@ with open(path) as f:
     content = f.read()
 
 main(content)
-
-
-if __name__ == "__main__":
-    program = """ 
-
-    
-    
-    """
-
-    jsx = evaluate(
-        check(
-            parse(
-                tokenize(
-                    program))))
-    print(jsx)

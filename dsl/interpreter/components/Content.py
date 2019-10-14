@@ -20,7 +20,7 @@ class Content(Component):
             content += "</div>"
 
         return f"""
-            <Content hasSider= style={{{{ margin: '18px 10px 0', overflow: 'initial' }}}}>
+            <Content style={{{{ margin: '18px 10px 0', overflow: 'initial' }}}}>
                 {content}
             </Content>
         """

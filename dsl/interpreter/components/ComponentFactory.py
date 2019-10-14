@@ -1,6 +1,8 @@
 from .Component import *
 from .Content import *
+from .Footer import *
 from .Header import *
+from .Link import *
 from .Nav import *
 from .Page import *
 from .Row import *
@@ -27,11 +29,13 @@ class RealComponentFactory(ComponentFactory):
     def __init__(self):
         super().__init__()
         self.COMPONENTS = {
-            "Page": Page,
-            "Nav": Nav,
             "Header": Header,
+            "Nav": Nav,
+            "Footer": Footer,
             "Content": Content,
-            "Text": Text
+            "Link": Link,
+            "Row": Row,
+            "Text": Text,
         }
-        self.COMPONENT_WITH_ROW = ["Page", "Nav", "Header", "Content"]
-        self.COMPONENT_WITH_PARAMS = ["Nav", "Header", "Content"]
+        self.COMPONENT_WITH_ROW = list(self.COMPONENTS.keys())
+        self.COMPONENT_WITH_PARAMS = list(self.COMPONENTS.keys())
