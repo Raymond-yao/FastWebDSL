@@ -3,14 +3,18 @@ class Component:
         "className": ""
     }
 
-    def __init__(self, component, defaultArgs, args, rows, argsToAttrMap={}):
+    def __init__(self, component, defaultArgs, args, rows, argToAttrMap={}):
         self.component = component
         self.args = {**self.GLOBAL_DEFAULT_ARGS, **defaultArgs, **args}
-        if len(self.args.keys()) != len(defaultArgs.keys()):
+        if len(self.args.keys()) != len({**self.GLOBAL_DEFAULT_ARGS, **defaultArgs}.keys()):
             raise UnknownArgError(component, defaultArgs.keys())
         for key in self.args.keys():
-            if key in argsToAttrMap.keys() and self.args[key] not in argsToAttrMap[key].values():
-                raise UnknownValueError(key, argsToAttrMap[key].values())
+            # I'm forcing the parameters to be type of strings
+            # then argToAttrMap deals with detailed attr values
+            if type(self.args[key]) is not str:
+                raise UnknownValueError(key, "strings")
+            if key in argToAttrMap.keys() and self.args[key] not in argToAttrMap[key].keys():
+                raise UnknownValueError(key, argToAttrMap[key].keys())
         self.rows = rows
 
     def render(self):
@@ -18,7 +22,7 @@ class Component:
 
     def getParamVal(self, param):
         if param not in self.args.keys():
-            raise UnknownArgError(param, self.component)
+            raise UnknownArgError(self.component, self.args)
         return self.args[param]
 
 
@@ -32,7 +36,7 @@ class EvaluationError(Exception):
 
 
 class UnknownArgError(Exception):
-    def __init__(self, expectedArgs, component):
+    def __init__(self, component, expectedArgs):
         super().__init__("Unknown Argument: component %s only expects %s" %
                          (component, list(expectedArgs)))
 

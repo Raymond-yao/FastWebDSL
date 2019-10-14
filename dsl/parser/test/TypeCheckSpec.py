@@ -48,5 +48,4 @@ class TypeCheckSpec(TestUtil):
         self.expectFailTypeCheck(program)
 
 
-if __name__ == '__main__':
-    unittest.main()
+

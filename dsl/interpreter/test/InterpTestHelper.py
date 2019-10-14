@@ -1,10 +1,12 @@
 from ..components.ComponentFactory import *
 from ..components.Component import Component
 
+
 class Dummy(Component):
 
     def __init__(self, name, params, rows):
-        super().__init__(params, rows)
+        self.params = params
+        self.rows = rows
         self.name = name
 
     def render(self):
@@ -16,10 +18,11 @@ class Dummy(Component):
             to_render.append(sth)
 
         return {
-        "name": self.name,
-        "params": self.params,
-        "rows": to_render
-    }
+            "name": self.name,
+            "params": self.params,
+            "rows": to_render
+        }
+
 
 class TestFactory(RealComponentFactory):
 

@@ -13,7 +13,7 @@ class Nav(Component):
 
     def __init__(self, args, rows):
         super().__init__(COMPONENT, self.DEFAULT_ARGS,
-                         args, rows, NavFactory.ARGS_TO_ATTR_MAP)
+                         args, rows, NavFactory.ARG_TO_ATTR_MAP)
 
     def render(self):
         navFactory = NavFactory(self.args, self.rows)
@@ -26,7 +26,7 @@ class Nav(Component):
 
 
 class NavFactory:
-    ARGS_TO_ATTR_MAP = {
+    ARG_TO_ATTR_MAP = {
         "size": {
             "small": 150,
             "medium": 230,
@@ -54,18 +54,14 @@ class NavFactory:
             if isinstance(row, Text):
                 items += f'<Menu.Item key="{i}">{row.getParamVal("text")}</Menu.Item>\n'
             elif isinstance(row, Link):
-                items += f'<Menu.Item key="{i}" onClick={{() => {self.__hrefCorrection(row.getParamVal("to"))} }}>{row.getParamVal("text")}</Menu.Item>\n'
+                items += f'<Menu.Item key="{i}" onClick={{() => window.location.href = {row.getHref()} }}>{row.getParamVal("text")}</Menu.Item>\n'
             else:
                 raise EvaluationError(
                     COMPONENT, "only Text and Link components are allowed")
         return items
 
-    def __hrefCorrection(self, href):
-        href = "https://" + href if "https://" not in href[0:8] else href
-        return 'window.location.href = ' + href
-
     def __createAttrs(self):
         self.siderAttr = f"""
-            style={{{{ minHeight: '100vh' width={self.ARGS_TO_ATTR_MAP["size"][self.args["size"]]} }}}}
+            style={{{{ minHeight: '100vh' width={self.ARG_TO_ATTR_MAP["size"][self.args["size"]]} }}}}
         """
         self.menuAttr = ""

@@ -1,6 +1,7 @@
 from .components.ComponentFactory import *
 from ..parser.ASTNode import *
 
+
 class Interpreter:
 
     def __init__(self, astRoot, comp_factory):
@@ -18,14 +19,14 @@ class Interpreter:
         if self.factory.has_row(astNode.layoutType):
             for rowNode in astNode.rows:
                 rows_to_add.append(self.handle_row(rowNode))
-        
+
         return component_builder(params, rows_to_add)
 
     def handle_row(self, rowNode):
         elems = []
         for e in rowNode.elements:
-           elems.append(self.handle_node_in_row(e))
-        
+            elems.append(self.handle_node_in_row(e))
+
         return elems
 
     def handle_node_in_row(self, node):
@@ -46,7 +47,6 @@ class Interpreter:
         else:
             raise RuntimeError(f"Unrecognized Row element {node}")
 
-
     def interp(self):
         layout_root = None
         for l in self.ast.layouts:
@@ -58,10 +58,22 @@ class Interpreter:
 
         return self.handle_layout(layout_root).render()
 
-def evaluate(ast):
-    return Interpreter(ast, RealComponentFactory()).interp()
 
 class RuntimeError(Exception):
     def __init__(self, msg):
         super().__init__(msg)
         self.message = msg
+
+
+def evaluate(ast):
+    return f"""
+        export default class App extends React.Component {{
+        render() {{
+            return (
+            <div>
+                {Interpreter(ast, RealComponentFactory()).interp()}
+            </div>
+            )
+        }}
+        }}
+    """
