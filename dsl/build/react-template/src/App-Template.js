@@ -1,5 +1,5 @@
 import React from "react";
-import '../../../../out/fast-web-dsl/src/node_modules/antd/dist/antd.css';
+import 'antd/dist/antd.css';
 import { Row, Col } from 'antd';
 import { Layout, Menu, Breadcrumb, Icon, Anchor, Card } from 'antd';
 import { PageHeader, Dropdown, Button, Tag, Typography } from 'antd';
