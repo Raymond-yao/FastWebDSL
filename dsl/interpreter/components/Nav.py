@@ -63,6 +63,8 @@ class NavFactory:
 
     def __createAttrs(self):
         self.siderAttr = f"""
-            width={{{self.ARG_TO_ATTR_MAP["size"][self.args["size"]]}}} style={{{{ minHeight: '100vh' }}}}
+            width={{{self.ARG_TO_ATTR_MAP["size"][self.args["size"]]}}}
+            style={{{{ minHeight: '100vh' }}}}
+            theme="{self.args["theme"]}"
         """
-        self.menuAttr = ""
+        self.menuAttr = f'theme="{self.args["theme"]}"'

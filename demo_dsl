@@ -1,11 +1,11 @@
 Page {
     [newHeader]
-    [leftNav Content() rightNav]
+    [leftNav content rightNav]
     [Footer()]
 }
 
 newHeader   = Header(title="Header")
-leftNav     = Nav(theme="#dark")
+leftNav     = Nav()
 rightNav    = Nav(size="small", theme="light")
 
 leftNav {
@@ -19,3 +19,9 @@ rightNav {
     [Link(text="Link 5", to="www.google.ca")]
 }
 
+content = Content()
+content {
+    [post]
+}
+
+post = Post(image="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png")

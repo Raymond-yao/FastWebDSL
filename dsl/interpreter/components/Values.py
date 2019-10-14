@@ -24,4 +24,4 @@ class Image(Component):
         super().__init__(COMPONENT, self.DEFAULT_ARGS, args, rows)
 
     def render(self):
-        return f"""<img src="{self.getParamVal("src")}" height="{self.getParamVal("height")}" width="{self.getParamVal("width")}">"""
+        return f"""<img alt="dsl example" src="{self.getParamVal("src")}" height="{self.getParamVal("height")}" width="{self.getParamVal("width")}" />"""

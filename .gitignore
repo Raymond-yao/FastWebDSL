@@ -4,3 +4,5 @@ __pycache__/
 .coverage
 .idea
 node_modules
+build
+dsl/build/react-template/src/App.js

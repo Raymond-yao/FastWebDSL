@@ -5,6 +5,7 @@ from .Header import *
 from .Link import *
 from .Nav import *
 from .Page import *
+from .Post import *
 from .Row import *
 from .Values import *
 
@@ -28,8 +29,9 @@ ALL_COMPONENTS = {
     "Text": Text,
     "Image": Image,
     "Page": Page,
+    "Post": Post,
     "Video": None, # TODO
-    "Button": Link #TODO
+    "Button": Link
 }
 
 class RealComponentFactory(ComponentFactory):

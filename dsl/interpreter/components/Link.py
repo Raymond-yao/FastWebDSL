@@ -19,7 +19,7 @@ class Link(Component):
             href if "https://" not in href[0:8] else href
 
     def getHref(self):
-        return self.href
+        return f'"{self.href}"'
 
     def render(self):
         return f"""
