@@ -11,3 +11,17 @@ class Text(Component):
 
     def render(self):
         return f"""<span>{self.getParamVal("text")}</span>"""
+
+COMPONENT = "Image"
+
+class Image(Component):
+    DEFAULT_ARGS = {
+        "src": "",
+        "height": "100",
+        "width": "100"
+    }
+    def __init__(self, args, rows):
+        super().__init__(COMPONENT, self.DEFAULT_ARGS, args, rows)
+
+    def render(self):
+        return f"""<img src="{self.getParamVal("src")}" height="{self.getParamVal("height")}" width="{self.getParamVal("width")}">"""

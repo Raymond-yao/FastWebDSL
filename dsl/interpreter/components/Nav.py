@@ -51,10 +51,11 @@ class NavFactory:
             if len(row) != 1:
                 raise EvaluationError(
                     COMPONENT, "each row in Nav should have exactly one item")
-            if isinstance(row, Text):
-                items += f'<Menu.Item key="{i}">{row.getParamVal("text")}</Menu.Item>\n'
-            elif isinstance(row, Link):
-                items += f'<Menu.Item key="{i}" onClick={{() => window.location.href = {row.getHref()} }}>{row.getParamVal("text")}</Menu.Item>\n'
+            component_in_row = row[0]
+            if isinstance(component_in_row, Text):
+                items += f'<Menu.Item key="{i}">{component_in_row.getParamVal("text")}</Menu.Item>\n'
+            elif isinstance(component_in_row, Link):
+                items += f'<Menu.Item key="{i}" onClick={{() => window.location.href = {component_in_row.getHref()} }}>{component_in_row.getParamVal("text")}</Menu.Item>\n'
             else:
                 raise EvaluationError(
                     COMPONENT, "only Text and Link components are allowed")

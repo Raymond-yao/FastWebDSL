@@ -1,4 +1,5 @@
 from enum import Enum
+from ..interpreter.components.ComponentFactory import ALL_COMPONENTS
 
 """
     An enumeration of tokens
@@ -21,8 +22,7 @@ class Type(Enum):
     COMMA = 8
 
 
-RESERVED_NAME = {"Nav", "Header", "Content", "Link", "Text",
-                 "Image", "Video", "Footer", "Button", "Page"}
+RESERVED_NAME = set(ALL_COMPONENTS.keys())
 
 
 class Token:

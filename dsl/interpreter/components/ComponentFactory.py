@@ -18,24 +18,22 @@ class ComponentFactory:
     def get(self, component_name):
         return self.COMPONENTS[component_name]
 
-    def has_row(self, component_name):
-        return component_name in self.COMPONENT_WITH_ROW
-    
-    def has_attribute(self, component_name):
-        return component_name in self.COMPONENT_WITH_PARAMS
+ALL_COMPONENTS = {
+    "Header": Header,
+    "Nav": Nav,
+    "Footer": Footer,
+    "Content": Content,
+    "Link": Link,
+    "Row": Row,
+    "Text": Text,
+    "Image": Image,
+    "Page": Page,
+    "Video": None, # TODO
+    "Button": Link #TODO
+}
 
 class RealComponentFactory(ComponentFactory):
 
     def __init__(self):
         super().__init__()
-        self.COMPONENTS = {
-            "Header": Header,
-            "Nav": Nav,
-            "Footer": Footer,
-            "Content": Content,
-            "Link": Link,
-            "Row": Row,
-            "Text": Text,
-        }
-        self.COMPONENT_WITH_ROW = list(self.COMPONENTS.keys())
-        self.COMPONENT_WITH_PARAMS = list(self.COMPONENTS.keys())
+        self.COMPONENTS = ALL_COMPONENTS

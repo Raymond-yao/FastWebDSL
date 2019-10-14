@@ -5,8 +5,8 @@ Page {
 }
 
 newHeader   = Header(title="Header")
-leftNav     = Nav(background="#80C2FF")
-rightNav    = Nav(size="small", background="#D4F2FC")
+leftNav     = Nav(theme="#dark")
+rightNav    = Nav(size="small", theme="light")
 
 leftNav {
     [Link(text="Link 1", to="www.google.ca")]
