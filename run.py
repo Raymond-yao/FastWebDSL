@@ -14,7 +14,7 @@ REACT_SOURCE_PATH = "dsl/build/react-template/"
 TEMPLATE_PATH = REACT_SOURCE_PATH + "src/App-Template.js"
 REACT_APP_PATH = REACT_SOURCE_PATH + "src/App.js"
 REACT_BUILD_PATH = "dsl/build/react-template/build"
-OUTPUT_PATH = "build/"
+OUTPUT_PATH = "out/"
 
 
 def main():
