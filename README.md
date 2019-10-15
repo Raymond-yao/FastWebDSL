@@ -1,4 +1,4 @@
-# DSL for Generating HTML Template
+# Fast Web DSL
 
 This DSL uses a declarative syntax to help you quickly generate an HTML template!
 All you need to do is to specify your layout structure and customize our pre-defined
