@@ -1,6 +1,9 @@
+import random
+
 from .Component import *
 from .Values import *
 from .Link import *
+from .Icons import *
 
 COMPONENT = "Nav"
 
@@ -45,6 +48,9 @@ class NavFactory:
     def getMenuAttr(self):
         return self.menuAttr
 
+    def randomlyGetIcon(self):
+        return ICONS[random.randint(0, len(ICONS))]
+
     def getItems(self):
         items = ""
         for i, row in enumerate(self.rows):
@@ -53,9 +59,19 @@ class NavFactory:
                     COMPONENT, "each row in Nav should have exactly one item")
             component_in_row = row[0]
             if isinstance(component_in_row, Text):
-                items += f'<Menu.Item key="{i}">{component_in_row.getParamVal("text")}</Menu.Item>\n'
+                items += f"""
+                <Menu.Item key="{i}">
+                    <Icon type="{self.randomlyGetIcon()}" />
+                    <span className="nav-text">{component_in_row.getParamVal("text")}</span>
+                </Menu.Item>\n"""
             elif isinstance(component_in_row, Link):
-                items += f'<Menu.Item key="{i}" onClick={{() => window.location.href = {component_in_row.getHref()} }}>{component_in_row.getParamVal("text")}</Menu.Item>\n'
+                items += f"""
+                <Menu.Item
+                    key="{i}"
+                    onClick={{() => window.location.href = {component_in_row.getHref()} }}>
+                    <Icon type="{self.randomlyGetIcon()}" />
+                    <span className="nav-text">{component_in_row.getParamVal("text")}</span>
+                </Menu.Item>\n"""
             else:
                 raise EvaluationError(
                     COMPONENT, "only Text and Link components are allowed")

@@ -4,29 +4,39 @@ Page {
     [Footer()]
 }
 
-newHeader = Header(title="Header")
+newHeader = Header(
+    title="Fast Web DSL",
+    subtitle="Share your idea with real website in no time!",
+    icon="https://avatars1.githubusercontent.com/u/8186664?s=460&v=4"
+)
+
 newHeader {
     [
-        Link(text="header link 1", to="www.google.ca")
-        Link(text="header link 2", to="www.google.ca")
+        Link(text="header link 1", to="https://github.com/Raymond-yao/FastWebDSL")
+        Link(text="header link 2", to="https://github.com/Raymond-yao/FastWebDSL")
     ]
 }
 
-leftNav   = Nav()
-rightNav  = Nav(size="small", theme="light")
+leftNav   = Nav(size="large")
+rightNav  = Nav(theme="light")
 
 leftNav {
-    [Link(text="Link 1", to="www.google.ca")]
-    [Link(text="Link 2", to="www.google.ca")]
-    [Link(text="Link 3", to="www.google.ca")]
+    [Link(text="Link 1", to="https://github.com/Raymond-yao/FastWebDSL")]
+    [Link(text="Link 2", to="https://github.com/Raymond-yao/FastWebDSL")]
+    [Link(text="Link 3", to="https://github.com/Raymond-yao/FastWebDSL")]
 }
 
 rightNav {
-    [Link(text="Link 4", to="www.google.ca")]
-    [Link(text="Link 5", to="www.google.ca")]
+    [Link(text="Link 4", to="https://github.com/Raymond-yao/FastWebDSL")]
+    [Link(text="Link 5", to="https://github.com/Raymond-yao/FastWebDSL")]
 }
+
+post = Post(
+    title="Fast Web DSL is GREAT!!!",
+    content="I can use it to build up a website for idea sharing and personal blog!!!"
+)
 
 content = Content()
 content {
-    [Post()]
+    [post Post()]
 }

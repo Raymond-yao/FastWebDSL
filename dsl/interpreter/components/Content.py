@@ -14,13 +14,13 @@ class Content(Component):
     def render(self):
         content = ""
         for row in self.rows:
-            content += f'<div style={{{{ margin: "0 0 12px 0", padding: 24, background: "{self.getParamVal("backgroud")}" }}}}>'
+            content += f'<div style={{{{ margin: "0 0 16px 0", padding: 24, background: "{self.getParamVal("backgroud")}" }}}}>'
             for item in row:
                 content += item.render()
             content += "</div>"
 
         return f"""
-            <Content style={{{{ margin: '18px 10px 0', overflow: 'initial' }}}}>
+            <Content style={{{{ overflow: 'initial' }}}}>
                 {content}
             </Content>
         """
