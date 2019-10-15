@@ -16,7 +16,7 @@ COMPONENT = "Image"
 
 class Image(Component):
     DEFAULT_ARGS = {
-        "src": "",
+        "src": "process.env.PUBLIC_URL + '/logo.png'",
         "height": "100",
         "width": "100"
     }
@@ -24,4 +24,4 @@ class Image(Component):
         super().__init__(COMPONENT, self.DEFAULT_ARGS, args, rows)
 
     def render(self):
-        return f"""<img alt="dsl example" src="{self.getParamVal("src")}" height="{self.getParamVal("height")}" width="{self.getParamVal("width")}" />"""
+        return f"""<img alt="dsl example" src={self.getParamVal("src")} height="{self.getParamVal("height")}" width="{self.getParamVal("width")}" />"""

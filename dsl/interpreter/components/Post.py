@@ -8,7 +8,7 @@ class Post(Component):
         "title": "Example Post",
         "content": "This is content",
         "icon": "",
-        "image": "",
+        "image": "{process.env.PUBLIC_URL + '/logo.png'}",
         "size": "medium",
     }
     ARG_TO_ATTR_MAP = {
@@ -31,7 +31,7 @@ class Post(Component):
     def getCover(self):
         cover = ""
         if self.getParamVal("image") != "":
-            img = Image({"src": self.getParamVal("image"), "width": str(self.getSize())}, [])
+            img = Image({"src": self.getParamVal("image"), "width": str(self.getSize()), "height": str(self.getSize())}, [])
             cover = f"cover={{{img.render()}}}"
         return cover
 

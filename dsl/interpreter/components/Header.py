@@ -57,9 +57,9 @@ class HeaderFactory:
         extras = "extra={["
         for i, item in enumerate(self.rows[0]):
             if isinstance(item, Text):
-                items += f'<Button type="link" key="{i}">{item.getParamVal("text")}</Button>\n'
+                extras += f'<Button type="link" key="{i}">{item.getParamVal("text")}</Button>,\n'
             elif isinstance(item, Link):
-                items += item.render() + "\n"
+                extras += item.render() + ",\n"
             else:
                 raise EvaluationError(
                     COMPONENT, "only Text and Link components are allowed")

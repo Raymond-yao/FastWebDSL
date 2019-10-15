@@ -25,8 +25,7 @@ class Link(Component):
         return f"""
             <Button
                 type="link"
-                class="{self.getParamVal("className")}"
-                href="{self.getHref()}">
+                href={self.getHref()}>
             {self.getParamVal("text")}
             </Button>
             """

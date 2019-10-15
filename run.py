@@ -14,7 +14,7 @@ REACT_SOURCE_PATH = "dsl/build/react-template/"
 TEMPLATE_PATH = REACT_SOURCE_PATH + "src/App-Template.js"
 REACT_APP_PATH = REACT_SOURCE_PATH + "src/App.js"
 REACT_BUILD_PATH = "dsl/build/react-template/build"
-OUTPUT_PATH = "out/"
+OUTPUT_PATH = "sample_output/"
 
 
 def main():
@@ -52,8 +52,8 @@ def main():
         f.write(template + reactComponet)
     if args.dev:
         print("Packing Your Dev React Project")
-        shutil.make_archive(OUTPUT_PATH + "dev-" + outputName, "zip", REACT_SOURCE_PATH)
-        print("Done!")
+        outputName = "Dev-" + outputName
+        shutil.make_archive(OUTPUT_PATH + outputName, "zip", REACT_SOURCE_PATH)
     else:
         print("Building Your React Project")
         root = os.getcwd()
@@ -64,5 +64,6 @@ def main():
         os.chdir(root)
         shutil.make_archive(OUTPUT_PATH + outputName, "zip", REACT_BUILD_PATH)
         subprocess.run(["rm", "-rf", REACT_BUILD_PATH])
+    print("Done! Output to: " + OUTPUT_PATH + outputName)
 
 main()
