@@ -13,7 +13,7 @@ DSL_PREFIX = "Fast-Web-DSL"
 REACT_SOURCE_PATH = "dsl/build/react-template/"
 TEMPLATE_PATH = REACT_SOURCE_PATH + "src/App-Template.js"
 REACT_APP_PATH = REACT_SOURCE_PATH + "src/App.js"
-REACT_BUILD_PATH = "dsl/build/react-template/build"
+REACT_BUILD_PATH = REACT_SOURCE_PATH + "build"
 OUTPUT_PATH = "sample_output/"
 
 
@@ -23,6 +23,7 @@ def main():
     Fast Web DSL uses a declarative syntax to help you quickly generate an HTML template!
     All you need to do is to specify your layout structure and customize our pre-defined
     components.
+
     Please refer to https://github.com/Raymond-yao/FastWebDSL
     """
     parser = argparse.ArgumentParser(
@@ -56,12 +57,14 @@ def main():
         shutil.make_archive(OUTPUT_PATH + outputName, "zip", REACT_SOURCE_PATH)
     else:
         print("Building Your React Project")
+        # Build Production React Project
         root = os.getcwd()
         os.chdir(REACT_SOURCE_PATH)
-        subprocess.run(["npm", "install"])
+        if not os.path.exists("node_modules"):
+            subprocess.run(["npm", "install"])
         subprocess.run(["npm", "run", "build"])
-        subprocess.run(["rm", "-rf", "node_modules"])
         os.chdir(root)
+        # Compress Production Build Project
         shutil.make_archive(OUTPUT_PATH + outputName, "zip", REACT_BUILD_PATH)
         subprocess.run(["rm", "-rf", REACT_BUILD_PATH])
     print("Done! Output to: " + OUTPUT_PATH + outputName)
