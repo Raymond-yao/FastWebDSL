@@ -1,8 +1,11 @@
 from .Component import *
 from .Content import *
+from .Footer import *
 from .Header import *
+from .Link import *
 from .Nav import *
 from .Page import *
+from .Post import *
 from .Row import *
 from .Values import *
 
@@ -16,22 +19,23 @@ class ComponentFactory:
     def get(self, component_name):
         return self.COMPONENTS[component_name]
 
-    def has_row(self, component_name):
-        return component_name in self.COMPONENT_WITH_ROW
-    
-    def has_attribute(self, component_name):
-        return component_name in self.COMPONENT_WITH_PARAMS
+ALL_COMPONENTS = {
+    "Header": Header,
+    "Nav": Nav,
+    "Footer": Footer,
+    "Content": Content,
+    "Link": Link,
+    "Row": Row,
+    "Text": Text,
+    "Image": Image,
+    "Page": Page,
+    "Post": Post,
+    "Video": None, # TODO
+    "Button": Link
+}
 
 class RealComponentFactory(ComponentFactory):
 
     def __init__(self):
         super().__init__()
-        self. COMPONENTS = {
-            "Page": Page,
-            "Nav": Nav,
-            "Header": Header,
-            "Content": Content,
-            "Text": Text
-        }
-        self.COMPONENT_WITH_ROW = ["Page", "Nav", "Header", "Content"]
-        self.COMPONENT_WITH_PARAMS = ["Nav", "Header", "Content"]
+        self.COMPONENTS = ALL_COMPONENTS

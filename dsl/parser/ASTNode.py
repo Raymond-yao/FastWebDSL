@@ -20,41 +20,8 @@ class ASTNode:
         Base class of ASTNode
     """
 
+    # dict to hold variable definition 
     dereference_dict = {}
-    constructor_def = {
-        "Nav": [
-            {"name": "size", "expected_type": int, "default": 100},
-            {"name": "colour", "expected_type": str, "default": "black"}
-        ],
-        "Header": [
-            {"name": "size", "expected_type": int, "default": 100},
-            {"name": "colour", "expected_type": str, "default": "black"},
-            {"name": "title", "expected_type": str, "default": "Navigation"}
-        ],
-        "Content": [
-        ],
-        "Link": [
-            {"name": "ref", "expected_type": str, "default": ""},
-            {"name": "colour", "expected_type": str, "default": "black"},
-            {"name": "title", "expected_type": str, "default": "Navigation"},
-        ],
-        "Image": [
-            {"name": "src", "expected_type": str, "default": ""}
-        ],
-        "Video": [
-            {"name": "src", "expected_type": str, "default": ""}
-        ],
-        "Footer": [
-            {"name": "title", "expected_type": str, "default": ""}
-        ],
-        "Button": [
-            {"name": "title", "expected_type": str, "default": ""}
-        ],
-        "Text": [
-            {"name": "text", "expected_type": str, "default": ""},
-            {"name": "colour", "expected_type": str, "default": "black"}
-        ]
-    }
 
     def __init__(self, list_of_tokens):
         self.tokens = list_of_tokens
@@ -180,7 +147,7 @@ class AssignmentNode(ASTNode):
         if self.assignment_type == self.FUNC:
             constructor = ASTNode.dereference_dict[self.var_name]
             # extend the structure to also memorize layout node later
-            ASTNode.dereference_dict[self.var_name] = {"constructor": constructor}
+            ASTNode.dereference_dict[self.var_name] = {"constructor": constructor, "layout": None}
             self.assigned.name_check()
 
     def type_check(self):
@@ -233,8 +200,6 @@ class ConstructorNode(ASTNode):
         return new_assign_node
 
     def name_check(self):
-        for attr in ASTNode.constructor_def[self.constructor_name]:
-            self.attr[attr["name"]] = attr["default"]
         for param in self.params:
             if param.assignment_type == AssignmentNode.VAR:
                 if param.assigned not in ASTNode.dereference_dict:
@@ -245,26 +210,8 @@ class ConstructorNode(ASTNode):
                 self.attr[param.var_name] = param.assigned
 
     def type_check(self):
-        if self.params:
-            attr_names = list(map(lambda attr_obj: attr_obj["name"], self.constructor_def[self.constructor_name]))
-            copy = attr_names.copy()
-            for param in self.params:
-                if param.var_name not in attr_names:
-                    raise TypeCheckError(
-                        f"There is no such attribute called '{param.var_name}' in {self.constructor_name}")
-                elif param.var_name not in copy:
-                    raise TypeCheckError(
-                        f"You declared attribute: '{param.var_name}' multiple times in {self.constructor_name} component ")
-                item = next(item for item in self.constructor_def[self.constructor_name] if item["name"] == param.var_name)
-                expected_type = item["expected_type"]
-                if param.assignment_type == AssignmentNode.VAR:
-                    actual_ref = ASTNode.dereference_dict[param.assigned]
-                else:
-                    actual_ref = param.assigned
-                if not isinstance(actual_ref, expected_type):
-                    raise TypeCheckError(
-                        f"The type of {param.var_name} is {type(actual_ref)}, should be {expected_type}.")
-                copy.remove(param.var_name)
+       # after discussion, we decide to push params validation to runtime
+        pass
 
 
 class LayoutNode(ASTNode):

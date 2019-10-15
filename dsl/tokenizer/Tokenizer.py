@@ -114,7 +114,7 @@ class Tokenizer:
                 self.char_buffer.append(char)
                 self.current_state = State.IDENTIFIER
             else:
-                raise InvalidTokenError("Invalid character [{char}]")
+                raise InvalidTokenError(f"Invalid character [{char}]")
 
     def handle_string(self, char):
         if char == "\n" or char == None:

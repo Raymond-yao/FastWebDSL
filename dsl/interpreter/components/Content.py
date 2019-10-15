@@ -1,21 +1,26 @@
 from .Component import *
-from .Row import *
+
+COMPONENT = "Content"
 
 
 class Content(Component):
+    DEFAULT_ARGS = {
+        "backgroud": "white"
+    }
 
-    def __init__(self, rows=[]):
-        self.rows = []
-        for r in rows:
-            self.rows.append(Row(r))
+    def __init__(self, args, rows):
+        super().__init__(COMPONENT, self.DEFAULT_ARGS, args, rows)
 
     def render(self):
-        things_to_render = []
-        for row_comp in self.rows:
-            things_to_render.append(row_comp.render())
+        content = ""
+        for row in self.rows:
+            content += f'<div style={{{{ margin: "0 0 12px 0", padding: 24, background: "{self.getParamVal("backgroud")}" }}}}>'
+            for item in row:
+                content += item.render()
+            content += "</div>"
 
         return f"""
-            <Content>
-                {"".join(things_to_render)}
+            <Content style={{{{ margin: '18px 10px 0', overflow: 'initial' }}}}>
+                {content}
             </Content>
         """

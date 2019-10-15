@@ -40,8 +40,7 @@ class InterpreterSpec(unittest.TestCase):
                     "name": "Header",
                     "params": {
                         "size": 100,
-                        "colour": "black",
-                        'title': 'Navigation'
+                        "colour": "black"
                     },
                     "rows": [[
                         {"name": "Text","params": {"text": "Hello World!"},"rows": []},
@@ -56,8 +55,8 @@ class InterpreterSpec(unittest.TestCase):
                         "colour": "blue"
                     },
                     "rows": [
-                        [{"name": "Link", "params": {'ref': '', 'colour': 'black', 'title': 'Navigation'}, "rows": []}],
-                        [{"name": "Link", "params": {'ref': '', 'colour': 'black', 'title': 'Navigation'}, "rows": []}]
+                        [{"name": "Link", "params": {}, "rows": []}],
+                        [{"name": "Link", "params": {}, "rows": []}]
                     ]
                 }]
             ]

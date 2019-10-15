@@ -1,0 +1,32 @@
+Page {
+    [newHeader]
+    [leftNav content rightNav]
+    [Footer()]
+}
+
+newHeader = Header(title="Header")
+newHeader {
+    [
+        Link(text="header link 1", to="www.google.ca")
+        Link(text="header link 2", to="www.google.ca")
+    ]
+}
+
+leftNav   = Nav()
+rightNav  = Nav(size="small", theme="light")
+
+leftNav {
+    [Link(text="Link 1", to="www.google.ca")]
+    [Link(text="Link 2", to="www.google.ca")]
+    [Link(text="Link 3", to="www.google.ca")]
+}
+
+rightNav {
+    [Link(text="Link 4", to="www.google.ca")]
+    [Link(text="Link 5", to="www.google.ca")]
+}
+
+content = Content()
+content {
+    [Post()]
+}

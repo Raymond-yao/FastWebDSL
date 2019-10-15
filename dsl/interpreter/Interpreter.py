@@ -1,6 +1,7 @@
 from .components.ComponentFactory import *
 from ..parser.ASTNode import *
 
+
 class Interpreter:
 
     def __init__(self, astRoot, comp_factory):
@@ -11,21 +12,20 @@ class Interpreter:
     def handle_layout(self, astNode):
         component_builder = self.factory.get(astNode.layoutType)
         params = {}
-        if self.factory.has_attribute(astNode.layoutType):
+        if astNode.layoutType != "Page":
             params = self.env[astNode.layoutName]["constructor"].attr
 
         rows_to_add = []
-        if self.factory.has_row(astNode.layoutType):
-            for rowNode in astNode.rows:
-                rows_to_add.append(self.handle_row(rowNode))
-        
+        for rowNode in astNode.rows:
+            rows_to_add.append(self.handle_row(rowNode))
+
         return component_builder(params, rows_to_add)
 
     def handle_row(self, rowNode):
         elems = []
         for e in rowNode.elements:
-           elems.append(self.handle_node_in_row(e))
-        
+            elems.append(self.handle_node_in_row(e))
+
         return elems
 
     def handle_node_in_row(self, node):
@@ -37,7 +37,7 @@ class Interpreter:
             else:
                 raise RuntimeError(f"free identifier {node.varName}")
         elif isinstance(node, dict):
-            if "layout" in node:
+            if node["layout"] != None:
                 return self.handle_layout(node["layout"])
             else:
                 return self.handle_node_in_row(node["constructor"])
@@ -45,7 +45,6 @@ class Interpreter:
             return self.factory.get(node.constructor_name)(node.attr, [])
         else:
             raise RuntimeError(f"Unrecognized Row element {node}")
-
 
     def interp(self):
         layout_root = None
@@ -58,10 +57,22 @@ class Interpreter:
 
         return self.handle_layout(layout_root).render()
 
-def evaluate(ast):
-    return Interpreter(ast, RealComponentFactory()).interp()
 
 class RuntimeError(Exception):
     def __init__(self, msg):
         super().__init__(msg)
         self.message = msg
+
+
+def evaluate(ast):
+    return f"""
+        export default class App extends React.Component {{
+        render() {{
+            return (
+            <div>
+                {Interpreter(ast, RealComponentFactory()).interp()}
+            </div>
+            )
+        }}
+        }}
+    """

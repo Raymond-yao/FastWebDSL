@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+echo "Install pip coverage for running tests"
+pip3 install coverage
+
 # Test script for validating functionality and code coverage
 
 calculateCoverage() {
